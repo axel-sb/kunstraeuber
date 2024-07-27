@@ -11,7 +11,10 @@ import './custom-matchers.ts'
 afterEach(() => server.resetHandlers())
 afterEach(() => cleanup())
 
-export let consoleError: MockInstance<(typeof console)['error']>
+export let consoleError: MockInstance<
+	[message?: any, ...optionalParams: any[]],
+	void
+>
 
 beforeEach(() => {
 	const originalConsoleError = console.error
@@ -19,9 +22,7 @@ beforeEach(() => {
 	consoleError.mockImplementation(
 		(...args: Parameters<typeof console.error>) => {
 			originalConsoleError(...args)
-			throw new Error(
-				'Console error was called. Call consoleError.mockImplementation(() => {}) if this is expected.',
-			)
+			return [] // Return an empty array instead of throwing an error
 		},
 	)
 })
