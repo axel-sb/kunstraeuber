@@ -72,15 +72,6 @@ export default function Zoom() {
 					<Viewer
 						src={identifier}
 						isTiledImage={true}
-						options={{
-							openSeadragon: {
-								gestureSettingsMouse: {
-									scrollToZoom: true,
-								},
-
-									showNavigator: true,
-							},
-						}}
 					/>
 				)}
 			</ClientOnly>

@@ -15,15 +15,30 @@
 	],
 	"workbench.editorAssociations": {
 		"*.db": "sqlite-viewer.view"
-    },
-    "workbench.colorCustomizations": {
-        "commandCenter.border": "#15202b99",
-        "sash.hoverBorder": "#61dafb",
-        "tab.activeBorder": "#61dafb",
-        "titleBar.activeBackground": "#61dafb",
-        "titleBar.activeForeground": "#15202b",
-        "titleBar.inactiveBackground": "#61dafb99",
-        "titleBar.inactiveForeground": "#15202b99"
-    },
-    "peacock.color": "#61dafb"
+	},
+	"workbench.colorCustomizations": {
+		"commandCenter.border": "#15202b99",
+		"sash.hoverBorder": "#61dafb",
+		"tab.activeBorder": "#61dafb",
+		"titleBar.activeBackground": "#61dafb",
+		"titleBar.activeForeground": "#15202b",
+		"titleBar.inactiveBackground": "#61dafb99",
+		"titleBar.inactiveForeground": "#15202b99"
+	},
+	"peacock.color": "#61dafb",
+	// "editor.fontFamily": "Operator Mono Lig",
+	"editor.fontWeight": "normal",
+	"editor.fontSize": 16,
+	"editor.lineHeight": 0,
+	"markdownAutoTOC.maximumHeadingLevel": 6,
+	// ............................. codeActionsOnSave
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit",
+		"source.addMissingImports": "explicit",
+		"source.organizeImports": "explicit",
+		"source.fixAll": "all",
+		"source.organizeImports": "all",
+		"source.addMissingImports": "all",
+		"source.fixAll.eslint": "all"
+	}
 }
