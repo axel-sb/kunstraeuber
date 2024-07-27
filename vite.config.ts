@@ -1,9 +1,10 @@
 import { vitePlugin as remix } from '@remix-run/dev'
-import { sentryVitePlugin } from '@sentry/vite-plugin'
-import { glob } from 'glob'
+// import { sentryVitePlugin } from '@sentry/vite-plugin'
+// import { glob } from 'glob'
+import { remixDevTools } from 'remix-development-tools'
 import { flatRoutes } from 'remix-flat-routes'
 import { defineConfig } from 'vite'
-
+import { cjsInterop } from 'vite-plugin-cjs-interop'
 const MODE = process.env.NODE_ENV
 
 export default defineConfig({
@@ -19,15 +20,22 @@ export default defineConfig({
 				return false
 			}
 		},
-
 		sourcemap: true,
 	},
-	server: {
-		watch: {
-			ignored: ['**/playwright-report/**'],
-		},
-	},
 	plugins: [
+		cjsInterop({
+			// List of CJS dependencies that require interop
+			dependencies: [
+				'canvas',
+				// Deep imports should be specified separately
+				'some-package/deep/import',
+				// But globs are supported
+				'some-package/foo/*',
+				// Even deep globs for scoped packages
+				'@some-scope/**',
+			],
+		}),
+		remixDevTools(),
 		remix({
 			ignoredRouteFiles: ['**/*'],
 			serverModuleFormat: 'esm',
@@ -49,25 +57,25 @@ export default defineConfig({
 				})
 			},
 		}),
-		process.env.SENTRY_AUTH_TOKEN
-			? sentryVitePlugin({
-					disable: MODE !== 'production',
-					authToken: process.env.SENTRY_AUTH_TOKEN,
-					org: process.env.SENTRY_ORG,
-					project: process.env.SENTRY_PROJECT,
-					release: {
-						name: process.env.COMMIT_SHA,
-						setCommits: {
-							auto: true,
-						},
-					},
-					sourcemaps: {
-						filesToDeleteAfterUpload: await glob([
-							'./build/**/*.map',
-							'.server-build/**/*.map',
-						]),
-					},
-				})
-			: null,
+		//		process.env.SENTRY_AUTH_TOKEN
+		//			? sentryVitePlugin({
+		//					disable: MODE !== 'production',
+		//					authToken: process.env.SENTRY_AUTH_TOKEN,
+		//					org: process.env.SENTRY_ORG,
+		//					project: process.env.SENTRY_PROJECT,
+		//					release: {
+		//						name: process.env.COMMIT_SHA,
+		//						setCommits: {
+		//							auto: true,
+		//						},
+		//					},
+		//					sourcemaps: {
+		//						filesToDeleteAfterUpload: await glob([
+		//							'./build/**/*.map',
+		//							'.server-build/**/*.map',
+		//						]),
+		//					},
+		//				})
+		//			: null,
 	],
 })

@@ -35,6 +35,8 @@ export function ErrorBoundary() {
 						<Link to="/" className="text-body-md underline">
 							<Icon name="arrow-left">Back to home</Icon>
 						</Link>
+
+						<img src="img/playmobilraeuber.jpg" className="pr-6" />
 					</div>
 				),
 			}}

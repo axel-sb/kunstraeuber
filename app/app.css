@@ -1,0 +1,543 @@
+* {
+	scrollbar-width: none;
+	text-wrap: pretty;
+}
+* {
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	text-wrap: balance;
+}
+
+:root {
+	--clamped: clamp(106.25%, 0.6855rem + 1.2903vw, 1.25rem);
+	font-size: var(--clamped);
+	--background: hsl(20 14.3 4.1);
+	color-scheme: dark;
+	--shadow-color: 0deg 0% 0%;
+	--shadow-elevation-low: 0.3px 0.5px 0.4px hsl(var(--shadow-color) / 1),
+		1.3px 2.5px 2.1px -5px hsl(var(--shadow-color) / 0.78);
+	--shadow-elevation-medium: 0.3px 0.5px 0.4px hsl(var(--shadow-color) / 1),
+		1px 2px 1.7px -2.5px hsl(var(--shadow-color) / 0.97),
+		6.3px 12.5px 10.5px -5px hsl(var(--shadow-color) / 0.49);
+	--shadow-elevation-high: 0.3px 0.5px 0.4px hsl(var(--shadow-color) / 1),
+		0.8px 1.7px 1.4px -1.2px hsl(var(--shadow-color) / 1),
+		4.9px 9.8px 8.2px -2.5px hsl(var(--shadow-color) / 0.98),
+		16px 31.9px 26.8px -3.7px hsl(var(--shadow-color) / 0.65),
+		37.5px 75px 62.9px -5px hsl(var(--shadow-color) / 0.32);
+
+	/* screensize numeric pixel value width/height vars */
+	/* https://dev.to/janeori/css-type-casting-to-numeric-tanatan2-scalars-582j */
+
+	--100vw: 100vw;
+	--100vh: 100vh;
+	--px-width: calc(tan(atan2(var(--100vw), 1px)));
+	--px-height: calc(tan(atan2(var(--100vh), 1px)));
+	/* calc() wrapper required for Safari, bug:
+  // https://bugs.webkit.org/show_bug.cgi?id=263000
+  */
+}
+
+@property --100vw {
+	syntax: '<length>';
+	initial-value: 0px;
+	inherits: false;
+}
+@property --100vh {
+	syntax: '<length>';
+	initial-value: 0px;
+	inherits: false;
+}
+
+.wrapper {
+	height: calc(var(--px-height) * 1px);
+	width: calc(var(--px-width) * 1px);
+}
+
+/*§§     _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _     */
+
+html {
+	height: 100dvh;
+}
+
+body {
+	font-weight: 400;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+		Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	text-rendering: optimizeLegibility;
+	height: 100%;
+	color-scheme: dark;
+	background: hsla(37, 58, 48, 0.8);
+}
+
+body::backdrop {
+	background: hsla(37, 58, 48, 0) !important;
+}
+
+/* header {
+	display: none;
+} */
+
+#theme-switch {
+	transform: translate(0px, -2rem);
+}
+
+.animate-hue {
+	animation: hue 60s 5s linear infinite;
+}
+
+.animate-hue-backdrop {
+	animation: hue 60s 5s linear infinite;
+}
+
+@keyframes hue {
+	from {
+		filter: hue-rotate(0deg);
+	}
+
+	to {
+		filter: hue-rotate(359deg);
+	}
+}
+
+@keyframes hue-backdrop {
+	from {
+		backdrop-filter: hue-rotate(0deg);
+	}
+
+	to {
+		backdrop-filter: hue-rotate(359deg);
+	}
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+	transition:
+		background-color 0s 600000s,
+		color 0s 600000s !important;
+}
+
+input:-internal-autofill-selected {
+	appearance: menulist-button;
+	background-image: none !important;
+	background-color: light-dark(
+		rgba(70, 90, 126, 0.4),
+		rgba(70, 90, 126, 0.4)
+	) !important;
+	color: fieldtext !important;
+}
+
+input[type='select'] {
+	border-right: 0;
+	&:active,
+	&:focus {
+		font-size: 1.25rem !important;
+	}
+}
+
+/* div[data-radix-popper-content-wrapper] {
+	transform: translate(1rem, 6rem) !important;
+	background: var(--background) !important;
+} */
+
+/* Enable panning and pinch zoom gestures, but disable additional non-standard gestures such as double-tap to zoom. Disabling double-tap to zoom removes the need for browsers to delay the generation of click events when the user taps the screen.  */
+button {
+	touch-action: manipulation;
+}
+
+#search-clear,
+::-webkit-search-cancel-button {
+	opacity: 0.7 !important;
+}
+
+#picker,
+input::-webkit-calendar-picker-indicator {
+	display: none !important;
+}
+
+/* ArtworkId */
+
+body:has(details) {
+	header {
+		display: none;
+	}
+
+	/* &:has(details[open]) {
+		.toolbar {
+			display: none;
+		} */
+	figcaption {
+		background: radial-gradient(
+			ellipse at 50% 45%,
+			#0005,
+			#0003,
+			transparent,
+			transparent
+		);
+	}
+	.artwork-title {
+		display: grid;
+		grid-template-columns: 1rem 1fr;
+		align-content: center;
+
+		div {
+			transform: translateY(0);
+			justify-self: center;
+			transform: translateX(-1rem);
+		}
+	}
+
+	.footer {
+		display: none;
+	}
+}
+
+.wrapper-text {
+	position: sticky;
+	top: 20rem;
+	background: radial-gradient(
+		ellipse at 50% 45%,
+		#0005,
+		#0003,
+		transparent,
+		transparent
+	);
+}
+
+.root-container,
+.outlet-container {
+	/* height: max-content; */
+	/* flex: none !important; */
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	/* z-index: 1; */
+}
+
+/* for viewport-width < 1024px */
+main {
+	&:has(details[open]) {
+		margin-left: 10rem;
+		figure > img {
+			position: relative;
+			top: -1rem;
+			right: 0rem;
+			height: auto;
+			max-height: 8rem;
+			-o-object-fit: contain;
+			object-fit: contain;
+			transition: all 1s ease-in-out;
+		}
+	}
+}
+
+@media (min-width: 1024px) {
+	main:has(details[open]) figure > img {
+		position: absolute !important;
+		top: 1rem !important;
+		right: 70% !important;
+		height: auto;
+		max-height: 40% !important;
+		-o-object-fit: contain;
+		object-fit: contain;
+		transition: all 1s ease-in-out;
+	}
+	details[open] {
+		position: static !important;
+	}
+}
+
+details > summary {
+	list-style: none;
+
+	&::-webkit-details-marker {
+		display: none;
+	}
+}
+
+details .btn-view {
+	display: flex;
+	&has:details[open] {
+		display: none;
+		z-index: 900;
+	}
+}
+
+.navigator,
+.viewer {
+	display: none !important;
+}
+
+figure {
+	z-index: 0;
+	/* top: -5rem; */
+}
+
+figure > img {
+	display: inline;
+	max-width: 100%;
+	max-height: 90vh;
+	-o-object-fit: contain;
+	object-fit: contain;
+	border-radius: 1.5% !important;
+	transition: opacity 1000ms ease-out;
+	box-shadow:
+		-0.3px -0.3px 0.5px 0.3px #fff4,
+		0.1px 0.2px 0.5px 0.3px #fff4,
+		0 0 0 0.6px #000,
+		0 0 0.1rem #fff4,
+		0 0 0.5px 1px #0005,
+		0 0 1px 2px #0003,
+		var(--shadow-elevation-low),
+		var(--shadow-elevation-medium),
+		var(--shadow-elevation-high);
+}
+
+summary > a {
+	padding-top: 0.25rem;
+}
+
+summary > div > svg {
+	width: 2rem;
+	height: 2rem;
+	color: currentColor;
+}
+
+main:has(details[open]) {
+	figure > img {
+		position: relative;
+		top: -1rem;
+		right: 0rem;
+		height: auto;
+		max-height: 8rem;
+		-o-object-fit: contain;
+		object-fit: contain;
+		transition: all 1s ease-in-out;
+	}
+}
+
+details {
+	overflow-y: scroll;
+	scrollbar-width: none;
+	/* Firefox */
+	-ms-overflow-style: none;
+	/* Internet Explorer 10+ */
+
+	&::-webkit-scrollbar {
+		/* WebKit */
+		width: 0;
+		height: 0;
+	}
+}
+
+body:has(details[open]) {
+	justify-content: flex-start;
+
+	main > button {
+		display: block;
+	}
+}
+
+ul {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5em;
+	padding-block: 2rem;
+}
+
+ul > li > strong {
+	opacity: 0.8;
+}
+
+details li {
+	list-style: none;
+	font-weight: 400;
+	white-space: break-spaces;
+	text-wrap: pretty;
+	line-height: 1.8em;
+	max-width: 100%;
+	&:last-child {
+		padding-bottom: 2rem;
+	}
+
+	p {
+		hyphens: auto;
+		white-space: normal;
+	}
+
+	a {
+		color: #c5d8ff;
+	}
+
+	strong {
+		font-weight: 500;
+	}
+}
+
+span {
+	white-space: normal;
+}
+
+.detail-content {
+	opacity: 90%;
+}
+
+details[open] {
+	overflow: visible;
+	summary {
+		padding-top: 0;
+		backdrop-filter: blur(5px);
+	}
+}
+
+/*___ toggle details with animation 2 */
+
+.expander {
+	display: grid;
+	grid-template-rows: 0fr;
+	overflow: hidden;
+	animation: ease-out expand none 1.5s;
+	/* transition: grid-template-rows 1s; */
+}
+
+.expander-content {
+	transition: visibility 1s;
+	/* visibility: hidden; */
+}
+
+details[open] > #expander {
+	grid-template-rows: 1fr;
+	overflow-y: auto;
+}
+
+main :has(details[open]) .toolbar > a {
+	transform: translate(-17rem, 45vh);
+}
+
+@keyframes expand {
+	0% {
+		grid-template-rows: 0fr;
+		opacity: 0;
+	}
+
+	10% {
+		opacity: 0.5;
+	}
+
+	100% {
+		grid-template-rows: 1fr;
+	}
+}
+
+.artwork-title {
+	button:hover,
+	.info:hover {
+		border-top: solid 0.5px currentcolor;
+		border-left: solid 0.5px currentcolor;
+		box-shadow: 3px 4px 0 0px currentcolor;
+		height: 2.5rem;
+		&.info:hover {
+			border-right: solid 0.5px currentColor;
+			box-shadow: -3px 4px 0 0px currentcolor;
+			padding: 4px 0 0 2px;
+		}
+	}
+}
+
+/*§§            Zoom to coordinates                */
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+a > div {
+	border: 2px solid violet;
+}
+
+a > span:first-of-type,
+a > div:first-of-type {
+	grid-column: span 2;
+}
+
+/* Artwork ID toggle Details */
+
+main {
+	:has(details[open]) {
+		div.summary-title {
+			display: none;
+		}
+		& .toolbar.btn-close {
+			display: block;
+		}
+		& .toolbar > a {
+			transform: translate(-13rem, 41vh);
+		}
+		li.span-title {
+			display: list-item;
+		}
+	}
+}
+
+#theme-switch {
+	display: none;
+}
+
+/* Calculate The Scroll Progress Of The Page
+https://css-tip.com/scroll-progress/
+July 23, 2024
+Get the scroll progress of the page as a CSS variable using a few lines of code
+
+
+@property --s {
+  syntax: '<integer>';
+  inherits: true;
+  initial-value: 0;
+}
+:root {
+  animation: scroll 1s linear;
+  animation-timeline: scroll();
+}
+
+@keyframes scroll {to {--s: 100}}
+
+body:before {
+  content: "Scroll Progress\A " counter(s) "%";
+  counter-reset: s var(--s);
+  font-size: 50px;
+  font-family: system-ui,sans-serif;
+  font-weight: 900;
+  white-space: pre;
+  text-align: center;
+  position: fixed;
+  inset: 0;
+  width: fit-content;
+  height: fit-content;
+  margin: auto;
+}
+
+body {
+  min-height: 100vh;
+}
+*/
+
+/* CSS-only Custom range slider with motion */
+/* https://codepen.io/t_afif/pen/MWdmZPL */
+
+/* scroll-snap */
+
+ul {
+	scroll-snap-stop: always;
+	scroll-snap-type: y mandatory;
+}
+
+li {
+	scroll-snap-align: center;
+}

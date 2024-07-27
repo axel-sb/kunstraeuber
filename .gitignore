@@ -24,3 +24,17 @@ node_modules
 
 # generated files
 /app/components/ui/icons
+
+# Ignore all .env files
+.env*
+.history
+
+app/routes/_marketing+/logos
+/prisma/dataArtic.json
+prisma/frequeny-tables/
+prisma/api-data*
+*test*
+package-lock.json
+public/img/
+other/svg-icons/cross-x.svg
+other/svg-icons/cross.svg

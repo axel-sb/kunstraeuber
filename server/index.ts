@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 import { createRequestHandler } from '@remix-run/express'
-import { type ServerBuild } from '@remix-run/node'
+import { type ServerBuild, installGlobals } from '@remix-run/node'
 import { ip as ipAddress } from 'address'
 import chalk from 'chalk'
 import closeWithGrace from 'close-with-grace'
@@ -10,6 +10,8 @@ import rateLimit from 'express-rate-limit'
 import getPort, { portNumbers } from 'get-port'
 import helmet from 'helmet'
 import morgan from 'morgan'
+
+installGlobals()
 
 const MODE = process.env.NODE_ENV ?? 'development'
 const IS_PROD = MODE === 'production'
@@ -117,7 +119,7 @@ app.use(
 				].filter(Boolean),
 				'font-src': ["'self'"],
 				'frame-src': ["'self'"],
-				'img-src': ["'self'", 'data:'],
+                'img-src': ["'self'", 'data:', 'blob:', 'img-src: *'],
 				'script-src': [
 					"'strict-dynamic'",
 					"'self'",
