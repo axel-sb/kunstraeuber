@@ -1,8 +1,16 @@
 {
 	"include": ["**/*.ts", "**/*.tsx"],
-	"exclude": ["**/_z.local.notes", "**/tests/setup/*"],
+	"exclude": ["**/_z.local.notes"],
 	"extends": ["@epic-web/config/typescript"],
 	"compilerOptions": {
+		"module": "ESNext",
+        "target": "ES2022",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
+        "strict": true,
+        "noImplicitAny": true,
+        "allowJs": true,
+        "forceConsistentCasingInFileNames": true,
 		"paths": {
 			"#app/*": ["./app/*"],
 			"#tests/*": ["./tests/*"],

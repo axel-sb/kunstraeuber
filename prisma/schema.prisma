@@ -136,36 +136,34 @@ model Connection {
 }
 
 model Artwork {
-    id                        Int     @id @default(autoincrement())
-    Title                     String? @map("Title")
-    Artist                    String? @map("Artist")
-    artist_title              String? @map("artist_title")
-    date_end                  Int?    @map("date_end")
-    Date                      String? @map("Date")
-    Provenance                String? @map("Provenance")
-    alt_text                  String? @map("alt_text")
-    width                     Int?    @map("width")
-    height                    Int?    @map("height")
-    Description               String? @map("Description")
-    Place                     String? @map("Place")
-    Medium                    String? @map("Medium")
-    Type                      String? @map("Type")
-    Category                  String? @map("Category")
-    Term                      String? @map("Term")
-    Style                     String? @map("Style")
-    Subject                   String? @map("Subject")
-    classification            String? @map("classification")
-    Technique                 String? @map("Technique")
-    color_h                   Int?    @map("color_h")
-    color_s                   Int?    @map("color_s")
-    color_l                   Int?    @map("color_l")
-    colorHsl                  String? @map("colorHsl")
-    is_zoomable               Boolean? @map("is_zoomable")
-    has_multimedia_resources  Boolean? @map("has_multimedia_resources")
-    has_educational_resources Boolean? @map("has_educational_resources")
-    has_advanced_imaging      Boolean? @map("has_advanced_imaging")
-    is_boosted                Boolean? @map("is_boosted")
-    image_url                 String?  @map("image_url")
-    favorite                  Boolean? @map("favorite")
-    weight                    Int?     @map("weight")
+    id                    Int      @id @default(autoincrement())
+    title                 String?
+    artist_display        String?
+    artist_title          String?
+    date_end              Int?
+    date_display          String?
+    place_of_origin       String?
+    medium_display        String?
+    provenance_text       String?
+    dimensions            String?
+    description           String?
+    biography             String?
+    artwork_type_title    String?
+    category_titles       String?
+    term_titles           String?
+    style_titles          String?
+    subject_titles        String?
+    classification_titles String?
+    technique_titles      String?
+    width                 Int?
+    height                Int?
+    color_h               Int?
+    color_s               Int?
+    color_l               Int?
+    colorHsl              String?
+    image_url             String?
+    alt_text              String?
+    favorite              Boolean?
+    weight                Int?
+    tags                  String?
 }
