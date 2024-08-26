@@ -10,10 +10,50 @@ import * as Sentry from '@sentry/remix'
 import chalk from 'chalk'
 import { isbot } from 'isbot'
 import { renderToPipeableStream } from 'react-dom/server'
+import { z, type TypeOf } from 'zod'
 import { getEnv, init } from './utils/env.server.ts'
 import { getInstanceInfo } from './utils/litefs.server.ts'
 import { NonceProvider } from './utils/nonce-provider.ts'
 import { makeTimings } from './utils/timing.server.ts'
+
+// https://www.jacobparis.com/content/type-safe-env
+const zodEnv = z.object({
+	// Database
+	DATABASE_PATH: z.string(),
+	DATABASE_URL: z.string(),
+	
+
+	LITEFS_DIR: z.string(),
+
+	CACHE_DATABASE_PATH: z.string(),
+	SESSION_SECRET: z.string(),
+	HONEYPOT_SECRET: z.string(),
+
+	INTERNAL_COMMAND_TOKEN: z.string(),
+
+	GITHUB_CLIENT_ID: z.string(),
+	GITHUB_CLIENT_SECRET: z.string(),
+	GITHUB_TOKEN: z.string(),
+})
+declare global {
+	namespace NodeJS {
+		interface ProcessEnv extends TypeOf<typeof zodEnv> {}
+	}
+}
+try {
+	zodEnv.parse(process.env)
+} catch (err) {
+	if (err instanceof z.ZodError) {
+		const { fieldErrors } = err.flatten()
+		const errorMessage = Object.entries(fieldErrors)
+			.map(([field, errors]) =>
+				errors ? `${field}: ${errors.join(', ')}` : field,
+			)
+			.join('\n  ')
+		throw new Error(`Missing environment variables:\n  ${errorMessage}`)
+		process.exit(1)
+	}
+}
 
 const ABORT_DELAY = 5000
 

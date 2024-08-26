@@ -36,7 +36,7 @@ export function ErrorBoundary() {
 							<Icon name="arrow-left">Back to home</Icon>
 						</Link>
 
-						<img src="img/playmobilraeuber.jpg" className="pr-6" />
+						<img src="/img/playmobilraeuber.jpg" className="pr-6" />
 					</div>
 				),
 			}}

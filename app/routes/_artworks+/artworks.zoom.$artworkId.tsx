@@ -6,10 +6,11 @@ import {
 } from '@remix-run/node'
 import { useNavigate, useLoaderData } from '@remix-run/react'
 import { ClientOnly } from 'remix-utils/client-only'
+// import { Icon } from '#app/components/ui/icon.js'
 import { Icon } from '#app/components/ui/icon.js'
 import Viewer from '../../components/viewer.client'
 import { getArtworkUrl } from '../resources+/search-data.server'
-import zoomStyles from './artworks.zoom.$artworkId.css?url'
+import zoomStyles from './artworks.zoom.artworkId.css?url'
 
 export const links: LinksFunction = () => {
 	return [{ rel: 'stylesheet', href: zoomStyles }]
@@ -45,35 +46,23 @@ export default function Zoom() {
 	const navigate = useNavigate()
 	const { identifier } = useLoaderData() as { identifier: string }
 	const { colorHsl } = useLoaderData() as { colorHsl: string }
+	const colorStyle = { '--color': colorHsl } as React.CSSProperties
 	return (
 		<>
-			<button
-				className="btn-back absolute bottom-4 left-8 z-10 h-9 w-9 rounded-full bg-black/75"
-				style={{
-					color: colorHsl,
-				}}
-				onClick={() => {
-					navigate(-1)
-					console.log('button-back clicked')
-				}}
-			>
+			<div className="backdrop-brightness-200 absolute bottom-4 left-8 z-10 inline-flex h-9 w-9 rounded-full bg-white/70 text-black backdrop-saturate-200">
 				<Icon
-					name="arrow-left"
-					className="h-6 w-6 brightness-150 saturate-200"
-					style={
-						{
-							/* color: colorHsl */
-						}
-					}
+					name="x"
+					className="h-9 w-9"
+					style={{
+						backgroundColor: '#0000',
+						borderRadius: '50%',
+						backgroundImage: 'radial-gradient(#0000, #0000 38%, #000 75% 100%)',
+					}}
+					onClick={() => navigate(-1)}
 				/>
-			</button>
+			</div>
 			<ClientOnly fallback={<div>Loading...</div>}>
-				{() => (
-					<Viewer
-						src={identifier}
-						isTiledImage={true}
-					/>
-				)}
+				{() => <Viewer src={identifier} isTiledImage={true} />}
 			</ClientOnly>
 		</>
 	)

@@ -2,7 +2,7 @@
 import { invariantResponse } from '@epic-web/invariant'
 import { type Artwork } from '@prisma/client'
 import {
-	// type LinksFunction,
+	type LinksFunction,
 	type LoaderFunctionArgs,
 	json,
 	redirect,
@@ -10,12 +10,13 @@ import {
 	type ActionFunctionArgs,
 } from '@remix-run/node'
 import {
+	Link,
 	NavLink,
 	useFetcher,
 	useLoaderData,
 	useNavigate,
 } from '@remix-run/react'
-// import artworkId from 'artworkId.css?url'
+import artworkId from './artworkId.css?url'
 import chalk from 'chalk'
 import { type FunctionComponent } from 'react'
 import { Button } from '#app/components/ui/button.tsx'
@@ -23,9 +24,10 @@ import { Icon } from '#app/components/ui/icon.js'
 import { getArtwork, updateArtwork } from '../resources+/search-data.server.tsx'
 
 // #endregion imports
-/* export const links: LinksFunction = () => [
+
+export const links: LinksFunction = () => [
 	{ rel: 'stylesheet', href: artworkId },
-] */
+]
 
 export const meta: MetaFunction<typeof loader> = () => {
 	return [
@@ -37,19 +39,15 @@ export const meta: MetaFunction<typeof loader> = () => {
 	]
 }
 
-export const action = async ({ params, request }: ActionFunctionArgs) => {
+export const action = async ({ params }: ActionFunctionArgs) => {
 	invariantResponse(params.artworkId, 'Missing artworkId param')
-	const formData = await request.formData()
 
 	await updateArtwork(parseInt(params.artworkId))
-	const favorite = Object.fromEntries(formData)
-	console.log(
-		chalk.bgGreen(' 🟠 formData: ', formData, ' 🟠🟠 favorite: ', favorite),
-	)
+
 	return redirect(`./`)
 }
 
-//§§     ::::::::::::::::::::::::::::::::::::::::::    MARK: Loader
+//§    ..........................................................................    MARK: Loader
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
 	invariantResponse(params.artworkId, 'Missing artworkId param')
@@ -71,11 +69,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 		),
 	) as Artwork
 
-	/* const colorHsl = artwork.colorHsl
-	const colorHsl50 = `hsla(${artwork.color_h},${artwork.color_s}, ${artwork.color_l}, 0.5)`
-	const colorHsla = (alpha: number) =>
-		`hsla(${artwork.color_h},${artwork.color_s}, ${artwork.color_l}, ${alpha.toFixed(2)})`
-	const colorHsl = artwork ? `${artwork.colorHsl}` : 'hsl(0deg 0% 65%)'*/
 	console.group(
 		chalk.blue.underline.overline('ArtworkId                           🧑🏻‍🎨'),
 	)
@@ -89,127 +82,177 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 	return json({ artwork: filteredArtwork })
 }
 
-//§§          :::::::::::::::::::::::          MARK:ArtworkId
+const Favorite: FunctionComponent<{
+	artwork: Pick<Artwork, 'favorite'>
+}> = ({ artwork }) => {
+	const fetcher = useFetcher()
+	const favorite = fetcher.formData
+		? fetcher.formData.get('favorite') === 'true'
+		: artwork.favorite
+
+	const {
+		artwork: { colorHsl: colorHsl },
+	} = useLoaderData<typeof loader>()
+
+	console.log('🔵 fetcher.formData →', fetcher.formData, '🔵')
+
+	return (
+		<fetcher.Form method="post" className="group-has-[details[open]]:hidden">
+			<Button
+				name="favorite"
+				variant="ghost"
+				size="ghost"
+				className="inline-flex items-end pt-0.5 group-has-[details[open]]:hidden"
+				style={{
+					color: colorHsl as unknown as string,
+					filter: 'brightness(1.75)',
+					strokeDasharray: 50,
+				}}
+			>
+				{favorite ? (
+					<Icon name="star-filling" size="xl" className="animated" />
+				) : (
+					<Icon name="star" size="xl" className="opacity-50" />
+				)}
+			</Button>
+		</fetcher.Form>
+	)
+}
+
+//§    ...............................................   MARK: export default
 
 export default function ArtworkId() {
 	const { artwork } = useLoaderData<typeof loader>()
 
 	const colorHsl = `${artwork.colorHsl}`
 
-	const colorHsla = (
-		h: number,
-		saturation: number,
-		lightness: number,
-		alpha: number,
-	) =>
-		`hsl(from hsl(${artwork.color_h}, ${saturation}%, ${lightness}%, ${alpha}) h s l )`
-	const h = artwork.color_h
-
-	__html: '<span class="font-bold opacity-60"> Artist:  </span> <br>' +
-		artwork.Artist
-
 	const artist = {
 		__html:
-			'<span class="font-bold opacity-60"> Artist:  </span> <br>' +
-			artwork.Artist,
+			'<span class="font-medium opacity-60">Artist:  </span> <br>' +
+			artwork.artist_display,
 	}
+
 	const description = {
-		__html: artwork.Description
-			? '<span class="font-bold opacity-60">Description: </span>' +
-				artwork.Description
-			: '',
+		__html:
+			artwork.description && artwork.description !== 'null'
+				? '<span class="font-medium opacity-60">Description: </span>' +
+					artwork.description
+				: '',
 	}
 	// for back-button
 	const navigate = useNavigate()
 
-	//toggle details
+	let gradient = {
+		backgroundImage: `conic-gradient(
+			from 331deg at 10% -5%,
+			oklch (from colorHsl)  l c h  / 0),
+			oklch (from colorHsl)  l c h  / 0.1) 40%,
+			oklch (from colorHsl)  l c h  / 0.4) 44%,
+			oklch (from colorHsl)  l c h  / 0.7) 47%,
+			oklch (from colorHsl)  l c h  / 1) 50%,
+			oklch (from colorHsl)  l c h  / 0.7) 53%,
+			oklch (from colorHsl)  l c h  / 0.4) 56%,
+			oklch (from colorHsl)  l c h  / 0.1) 60%,
+			oklch (from colorHsl)  l c h  / 0))`,
+	} as React.CSSProperties
 
-	const handleClick = (e: { target: any }) => {
-		e.target.classList.toggle('open')
-	}
+	let gradientDetailsOpen = {
+		backgroundImage: `conic-gradient(
+			from 331deg at 10% -5%,
+			oklch (from colorHsl)  l c h  / 0),
+			oklch (from colorHsl)  l c h  / 0.1) 40%,
+			oklch (from colorHsl)  l c h  / 0.2) 44%,
+			oklch (from colorHsl)  l c h  / 0.3) 47%,
+			oklch (from colorHsl)  l c h  / 0.4) 50%,
+			oklch (from colorHsl)  l c h  / 0.3) 53%,
+			oklch (from colorHsl)  l c h  / 0.2) 56%,
+			oklch (from colorHsl)  l c h  / 0.1) 60%,
+			oklch (from colorHsl)  l c h  / 0))`,
+	} as React.CSSProperties
 
-	//§§ :::::::::::::::::::::::  MARK: return
+	const varImageUrl = {
+		'--img': 'url(imageUrl : string)',
+	} as React.CSSProperties
+
+	const lyr0 = {
+		'--lyr0': '',
+	} as React.CSSProperties
+
+	const lyr1 = {
+		'--lyr1': 'radialGradient(circle, #000, #fff) 0 0/6px 6px space',
+		position: 'relative',
+		overflow: 'hidden',
+		filter: 'contrast(19)',
+	} as React.CSSProperties
+
+	console.log(
+		chalk.blue.bgWhite('varImageUrl, lyr0, lyr1', varImageUrl, lyr0, lyr1),
+	)
+	//§ ...............................................................  MARK: return  ‾‾‾ ⮐
 
 	return (
-		<div
-			className="wrapper relative flex h-dvh w-screen justify-center overflow-y-hidden"
-			style={{
-				backgroundColor: `${colorHsla(h ? h : 0, 5, 35, 0.25)}`,
-				backgroundImage: `linear-gradient(50deg,
-                ${colorHsla(h ? h : 0, 100, 50, 0.1)},
-                ${colorHsla(h ? h : 0, 100, 15, 1)},
-                ${colorHsla(h ? h : 0, 100, 10, 1)},
-                ${colorHsla(h ? h : 0, 100, 10, 1)},
-                ${colorHsla(h ? h : 0, 100, 15, 1)},
-                ${colorHsla(h ? h : 0, 100, 50, 0.1)}
-                ),
-                linear-gradient(50deg,
-                ${colorHsla(h ? h : 0, 30, 50, 0.75)},
-                ${colorHsla(h ? h : 0, 100, 0, 0)},
-                ${colorHsla(h ? h : 0, 100, 0, 0)},
-                ${colorHsla(h ? h : 0, 100, 0, 0)},
-                ${colorHsla(h ? h : 0, 100, 0, 0)},
-                ${colorHsla(h ? h : 0, 100, 50, 0.4)}
-                )`,
-				backgroundBlendMode: 'color-burn',
-			}}
-		>
+		<>
 			<div
-				className="wrapper relative flex h-dvh w-screen justify-center overflow-y-hidden"
-				style={{
-					backgroundImage: `conic-gradient(from 331deg at 10% -5%,
-                    ${colorHsla(h ? h : 0, 0, 0, 0)},
-                    ${colorHsla(h ? h : 0, 100, 20, 0.1)} 40%,
-                    ${colorHsla(h ? h : 0, 100, 50, 0.35)} 47%,
-                    ${colorHsla(h ? h : 0, 100, 50, 0.5)} 50%,
-                    ${colorHsla(h ? h : 0, 100, 50, 0.25)} 55%,
-                    ${colorHsla(h ? h : 0, 10, 5, 0.05)} 70%,
-                    ${colorHsla(h ? h : 0, 0, 0, 0)}
-                    ),
-                    linear-gradient(335deg, #0000, #000 40%, #000 60%, #0001 70%,  #0000
-                    )`,
-				}}
-			>
-				{/* //§§ ::::::::::::::::::::::: MARK: main */}
-				<main className="item justify-betweenoverflow-y-auto group relative flex min-h-full w-screen max-w-[calc(843px+2rem)] flex-col items-center justify-between overscroll-y-contain bg-scroll px-4 pb-4 pt-4">
-					<figure className="relative mt-8 flex h-full w-full flex-col items-center justify-start lg:w-screen">
+				className="wrapper absolute flex h-dvh w-screen flex-col items-center from-black/50 to-black/25 bg-[length:100%_300%] bg-no-repeat has-[details[open]]:hidden"
+				style={gradient}
+			></div>
+
+			<div
+				className="wrapper absolute hidden h-dvh w-screen flex-col items-center from-black/50 to-black/25 bg-[length:100%_300%] bg-no-repeat has-[details[open]]:flex"
+				style={gradientDetailsOpen}
+			></div>
+
+			{/* //§ ............. ..............................................  MARK: Main ❗️
+			 */}
+			<main className="group mx-auto flex h-[100dvh] w-screen max-w-[calc(843px+8rem)] flex-col items-center justify-between overscroll-y-contain">
+				<figure className="relative flex w-full flex-1 flex-col items-center justify-around py-20">
+					{/*
+            //§ ...........................................................  MARK: ArtworkWrapper
+				 */}
+					<div
+						className="artwork-wrapper flex h-full w-full max-w-[calc(843px+8rem)] flex-col items-center justify-center px-4 lg:px-16"
+						style={{ containerType: 'inline-size' }}
+					>
 						<img
-							className="rounded-sm"
+							className="mx-auto max-h-[80dvh] max-w-[clamp(281px,_843px_+_8rem,_calc(100vw-2rem))] object-contain object-center pb-8 group-has-[details[open]]:max-h-44 group-has-[details[open]]:max-w-[50%] group-has-[details[open]]:px-4"
 							alt={artwork.alt_text ?? undefined}
 							key={artwork.id}
 							src={artwork.image_url ?? '../../../four-mona-lisas-sm.jpg'}
+							style={{
+								boxShadow: `
+                0px 0px 0px 0.5px #fff , 0px 0px 1px 1px #fff ,
+                2px 4px 2px 0 oklch(from colorHsl 0.25 c h / 1),
+                4px 8px 22px 0 oklch(from colorHsl 0.15 c h / 1)`,
+							}}
 						/>
-
 						{/*
-                    // #region details // §§  ::::::::::::::::::::::::::::::::::
-                    */}
+            //§    ................................................   MARK:  figcaption
+						 */}
 
-						<figcaption className="mx-auto flex h-full w-full flex-col items-center justify-end">
-							<details
-								id="artwork-info"
-								className="styled group h-full w-full overflow-y-auto sm:max-w-[843px] lg:absolute lg:-right-20 lg:top-0 lg:overflow-x-visible"
-							>
-								{/* //§§ ..........  MARK:Summary */}
+						<figcaption className="flex h-12 w-full max-w-[calc(843px+8rem)] flex-shrink flex-col items-center justify-start">
+							{/*
+               // #region details // §  ...............................  MARK: Details
+            */}
+							<details className="group flex h-full w-full flex-1 overflow-auto sm:max-w-[843px] lg:max-w-[calc(843px+8rem)]">
+								{/*
+                //§ ..................................................  MARK:Summary
+								 */}
 
 								<summary
-									onClick={(e) => {
+									/* onClick={(e) => {
 										handleClick(e)
-									}}
-									className="lg: relative flex h-full flex-col items-center justify-between pt-12 text-xl group-has-[details[open]]:h-min  lg:mt-4 lg:max-w-sm lg:items-start lg:justify-start lg:px-4"
+									}} */
+									className="relative z-10 mx-auto flex w-full flex-grow list-none gap-4 pt-6 group-has-[details[open]]:h-min lg:mt-4"
 								>
-									<div className="summary-title group-has-[details[open]]:hidden lg:pl-2">
-										{artwork.Title}
-									</div>
-									<div className="summary-artist font-semibold opacity-50 group-has-[details[open]]:hidden lg:pl-2">
-										{artwork.Artist}
-									</div>
+									<div className="wrapper grid min-w-full grid-cols-[3.5rem_calc(100%-7rem)_3.5rem] grid-rows-[3rem] items-center justify-between justify-items-end gap-8">
+										{/*
+                    //§ ............................................  MARK: btn-back ⏪
+										 */}
 
-									<div className="toolbar absolute top-16 flex w-full max-w-[843px] items-center justify-around group-has-[details[open]]:static group-has-[details[open]]:translate-y-0 lg:-translate-y-20 lg:justify-start lg:gap-10">
 										<Button
-											className="btn-back block w-10 group-has-[details[open]]:hidden"
+											className="btn btn-back group-has-[details[open]:hidden z-50 col-[1_/_2] inline-flex h-10 w-10 cursor-pointer justify-self-start rounded-full text-yellow-50/50"
 											variant="ghost"
-											size={'lg'}
-											style={{ color: colorHsl }}
+											size="ghost"
 											onClick={() => {
 												navigate(-1)
 											}}
@@ -217,61 +260,101 @@ export default function ArtworkId() {
 											<Icon
 												name="cross-1"
 												size="xl"
-												className="saturate-200"
-												style={{ color: colorHsl }}
+												className=""
+												// style={{ color: colorHsl }}
 											/>
 										</Button>
 
-										<div
-											className="btn-close relative hidden h-7 w-7 hover:bg-slate-900 group-has-[details[open]]:block"
-											style={{ color: colorHsl }}
+										{/*
+                    //§ .....................................................  MARK: title 📜
+										 */}
+
+										<div className="title col-[2_/_3] text-center text-xl leading-snug">
+											{artwork.title}
+										</div>
+
+										{/* //§ ..........................................  MARK: info-circled ℹ️
+										 */}
+
+										<Button
+											className="group-has-[details[open]:hidden inline-flex h-10 w-10 cursor-pointer justify-self-start rounded-full text-yellow-50/50"
+											variant="ghost"
+											size="ghost"
 										>
 											<Icon
-												name="cross-1"
+												name="info-circled"
 												size="lg"
-												className="saturate-100"
+												className=""
+												style={{ color: colorHsl }}
+											/>
+										</Button>
+									</div>
+
+									<div className="image-caption hidden h-full w-full flex-wrap justify-center gap-4 group-has-[details[open]]:h-12 group-has-[details[open]]:items-center group-has-[details[open]]:justify-between">
+										<div className="hidden h-10 w-10 items-center justify-center group-has-[details[open]]:inline-flex">
+											<Icon
+												name="cross-circled"
+												size="font"
+												className="text-[1.4rem]"
 												style={{ color: colorHsl }}
 											/>
 										</div>
 
+										{/* //§ .................................................  MARK: zoom 🔎
+										 */}
+
 										<NavLink
-											className={({ isActive, isPending }) =>
-												isActive ? 'active' : isPending ? 'pending' : ''
-											}
+											className={`$({ isActive, isPending }) => isActive ? 'active' : 'pending' + hidden h-10 w-10 items-center justify-center group-has-[details[open]]:inline-flex group-has-[details[open]]:pt-1`}
 											to={`../artworks/zoom/${artwork.id}`}
+											style={{ color: colorHsl }}
 										>
 											<Icon
 												name="zoom-in"
-												className="h-8 w-8 saturate-200"
+												className="hidden stroke-background text-3xl group-has-[details[open]]:inline-flex group-has-[details[open]]:justify-start"
 												size="font"
-												style={{ color: colorHsl }}
+												style={{
+													color: colorHsl,
+													stroke: 'hsl(20 14.3 4.1)',
+													strokeWidth: '.1px',
+												}}
 											/>
 										</NavLink>
-
-										<div
-											className="info w-10 rounded-lg border-slate-100 shadow-black group-has-[details[open]]:hidden"
-											style={{ color: colorHsl }}
-										>
-											<Icon name="info-i2" size="xl" className="saturate-200" />
-										</div>
-
-										<Favorite artwork={artwork} />
 									</div>
+									{/* //§ .......................................................  MARK:Toolbar ⚙️
+									 */}
 								</summary>
-								{/*
-                            //§§  ............................  !MARK:info data
+
+								{/*https://developer.mozilla.org/en-US/docs/Web/CSS/clip-path#specifications
+                 //§  ....................................................  MARK: 🡸Expander🡺
 							*/}
 
-								<div className="expander" id="expander">
-									<div className="expander-content min-h-0 grid-cols-1">
-										<ul className="flex h-full flex-col gap-1 px-4 py-8 text-[.9rem]">
-											<li className="span-title font-bold opacity-60">
-												Title:
+								<div
+									className="group-has[details[open]]:grid-rows-1 group-has[details[open]]:overflow-y-scroll grid grid-rows-none"
+									id="expander"
+									style={{
+										animation: 'ease-out expand forwards 1.5s alternate',
+									}}
+								>
+									<div
+										className="expander-content min-h-0 leading-relaxed"
+										/* style={{
+											animation: 'ease-out expand forwards 1.5s reverse',
+										}} */
+									>
+										<ul className="flex h-full flex-col gap-2 px-4 leading-relaxed">
+											<li key="title">
+												<span className="list-item font-medium opacity-75">
+													Title
+													{': '}
+												</span>
+												<span className="detail-content inline-block text-lg">
+													{artwork.title}
+												</span>
 											</li>
-											<li className="detail-content pb-4">{artwork.Title}</li>
+
 											<li
 												dangerouslySetInnerHTML={artist}
-												className="hyphens-auto pb-4"
+												className="hyphens-auto pb-4 text-lg"
 											></li>
 
 											{Object.entries(artwork)
@@ -299,7 +382,6 @@ export default function ArtworkId() {
 															key === 'Place' ||
 															key === 'Medium'),
 												)
-
 												.sort(([keyA], [keyB]) => {
 													const order = ['Date', 'Place', 'Medium', ,]
 													const indexA = order.indexOf(keyA)
@@ -307,21 +389,25 @@ export default function ArtworkId() {
 													return indexA - indexB
 												})
 												.map(([key, value]) => (
-													<li key={key}>
-														<span className="font-bold opacity-60">{key}:</span>{' '}
-														<span className="detail-content">{value}</span>
+													<li key={key} className="pb-6">
+														<span className="list-item font-medium opacity-60">
+															{key}:
+														</span>{' '}
+														<span className="detail-content inline-block">
+															{value}
+														</span>
 													</li>
 												))}
 											<li
-												className="max-w-prose pt-4"
+												className="max-w-prose pb-4 pt-4 leading-relaxed"
 												dangerouslySetInnerHTML={description}
 											></li>
 											{Object.entries({
-												Style: artwork.Style,
-												Subject: artwork.Subject,
-												Type: artwork.Type,
-												Technique: artwork.Technique,
-												Provenance: artwork.Provenance,
+												Style: artwork.style_titles,
+												Subject: artwork.subject_titles,
+												Type: artwork.artwork_type_title,
+												Technique: artwork.technique_titles,
+												Provenance: artwork.provenance_text,
 											})
 												.filter(
 													([_, value]) =>
@@ -332,9 +418,14 @@ export default function ArtworkId() {
 												)
 												.map(([key, value]) => (
 													<li key={key}>
-														<span className="font-bold opacity-60">{key}</span>
-														{': '}
-														<span className="detail-content">{value}</span>
+														<span className="list-item font-medium opacity-60">
+															{key}
+															{': '}
+														</span>
+
+														<span className="detail-content inline-block pb-4">
+															{value}
+														</span>
 													</li>
 												))}
 										</ul>
@@ -342,44 +433,35 @@ export default function ArtworkId() {
 								</div>
 							</details>
 							{/*
-                        // #endregion DETAILS
-                        */}
+               // #endregion DETAILS
+            */}
 						</figcaption>
-					</figure>
-				</main>
-			</div>
-		</div>
+						{/* end of div.artwork-wrapper */}
+					</div>
+				</figure>
+
+				{/* //§ ............................................................  MARK: Header ▀▀▀
+				 */}
+
+				<header className="absolute top-0 flex w-full items-center justify-between p-4">
+					<Logo />
+					<div className="spacer w-[max(100%,843px)]"></div>
+					<Favorite artwork={artwork} />
+				</header>
+			</main>
+		</>
 	)
-}
 
-const Favorite: FunctionComponent<{
-	artwork: Pick<Artwork, 'favorite'>
-}> = ({ artwork }) => {
-	const fetcher = useFetcher()
-	const favorite = fetcher.formData
-		? fetcher.formData.get('favorite') === 'true'
-		: artwork.favorite
-	console.log('🟡 fetcher.formData →', fetcher.formData)
-	const {
-		artwork: { colorHsl: colorHsl },
-	} = useLoaderData<typeof loader>()
-
-	console.log('🔵 fetcher.formData →', fetcher.formData, '🔵')
-
-	return (
-		<fetcher.Form method="post" className="group-has-[details[open]]:hidden">
-			<Button
-				name="favorite"
-				variant="ghost"
-				className="pb-0 pt-1 group-has-[details[open]]:hidden"
-				style={{ color: colorHsl as unknown as string }}
-			>
-				{favorite ? (
-					<Icon name="star-filled" size="xl" className="saturate-100" />
-				) : (
-					<Icon name="star" size="xl" className="saturate-100" />
-				)}
-			</Button>
-		</fetcher.Form>
-	)
+	function Logo() {
+		return (
+			<Link to="/" className="group relative z-10 grid leading-snug">
+				<span className="font-light leading-none text-cyan-200 transition group-hover:-translate-x-1">
+					kunst
+				</span>
+				<span className="font-medium leading-none text-yellow-100 transition">
+					räuber
+				</span>
+			</Link>
+		)
+	}
 }

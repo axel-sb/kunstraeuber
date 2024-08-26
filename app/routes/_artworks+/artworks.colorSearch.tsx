@@ -6,8 +6,10 @@ import {
 } from '@remix-run/node'
 import {
 	Form,
+	Link,
 	NavLink,
 	useLoaderData,
+	useLocation,
 	useNavigation,
 	useSubmit,
 } from '@remix-run/react'
@@ -38,9 +40,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 }
 // #endregion
 
-// #region Color Search  // //§§  _________________ Color Search 🌈
+// //§ ______________________ MARK: exp.default 🌈
 // https://uiwjs.github.io/react-color/#/hue
-
 
 export default function ColorSearch({
 	status,
@@ -91,7 +92,17 @@ export default function ColorSearch({
 		submit(form)
 	}, 400)
 
-	/* //§§  ______________________________________  Color Picker 🌈  */
+	const location = useLocation()
+
+	/* const colorHsl = data?.length > 0 ? data[0]?.colorHsl : 'hsl(0, 0%, 0%)' ?? 'hsl(0, 0%, 0%)'; */
+
+	const currentQueryKey = location.search
+		.split('&')
+		.find((part) => part.startsWith('='))
+		?.split('=')[1]
+
+	//§  __________________________________ MARK: return
+	//§   Color Picker 🌈
 
 	return (
 		<>
@@ -147,53 +158,120 @@ export default function ColorSearch({
 				<div aria-hidden hidden={!searching} id="search-spinner" />
 			</Form>
 
-			{/* //§§  ______________________________________response (images) on page */}
+			{/* //§§  ______________________________________  MARK: main
+			 */}
 
-			<main className="flex flex-col items-center justify-center">
-				<ul className="artworks-preview max-h-[90dvh]} mb-12 flex w-full flex-col items-center justify-start gap-16 overflow-y-auto">
+			<main className="flex flex-col items-center overscroll-contain px-4">
+				<ul className="artworks-fade-in grid grid-cols-2 gap-2 md:grid-cols-4">
+					{/* className="artworks-fade-in flex w-full touch-pan-y snap-y list-none flex-col items-center justify-start gap-y-28 overflow-y-auto overflow-x-visible overscroll-contain pb-28 pt-12" */}
+
 					{data ? (
-						data.map((artwork) => (
-							<li key={artwork.id} className="md:max-w-sm">
-								<NavLink
-									className={({ isActive, isPending }) =>
-										isActive ? 'active' : isPending ? 'pending' : ''
-									}
-									to={`../artworks/${artwork.id}`}
+						location.search === '' ? (
+							<li className="w-15rem relative flex max-w-sm flex-wrap justify-center whitespace-pre text-lg text-yellow-50">
+								<p className="px-4 font-normal opacity-100">
+									No search query provided
+								</p>
+								<p className="px-4 font-semibold opacity-50">
+									(search type: <em> " {currentQueryKey} " </em>)
+								</p>
+							</li>
+						) : (
+							data.map((artwork) => (
+								<li
+									key={artwork.id}
+									className="flex max-h-fit snap-center items-center"
 								>
-									{artwork.Title ? (
-										<>
-											<figure className="relative p-4 hover:grid hover:items-start">
+									<NavLink
+										className={({ isActive, isPending }) =>
+											isActive ? 'active' : isPending ? 'pending' : ''
+										}
+										to={`./${artwork.id}`}
+									>
+										{artwork.title ? (
+											<figure className="relative z-40 mx-auto grid max-h-full max-w-[281px] place-items-center gap-4 pt-4 lg:static lg:max-w-full lg:-translate-x-28 lg:grid-cols-2">
+												{/* // todo https://pagedone.io/docs/image  */}
 												<img
 													alt={artwork.alt_text ?? undefined}
 													key={artwork.id}
 													src={artwork.image_url ?? '../dummy.jpeg'}
 												/>
-												{/* §  figcaption ____artwork.Title_-_artwork.artist_title_-_arrow-right */}
-												<figcaption>
-													<div>{artwork.Title}</div>
-													<div className="flex w-full justify-between">
-														<span>{artwork.artist_title}</span>
+
+												{/*
+                                            //§§   .  .  .  .  .  .  .  .  .  .    MARK: Figcaption
+                                            */}
+												<figcaption className="z-50 flex w-full justify-between pt-2 lg:absolute lg:-right-8 lg:top-32 lg:max-w-fit lg:translate-x-full">
+													<div className="relative flex w-full flex-wrap text-sm">
+														<div className="max-w-full">{artwork.title}</div>
+
+														<div className="w-[calc(100%-1rem)] font-semibold opacity-50">
+															{artwork.artist_title}
+														</div>
 														<Icon
 															name="eye-open"
-															className="absolute bottom-4 right-4 h-6 w-6"
+															className="icon-eye absolute -right-6 top-0 hidden h-6 w-6 opacity-90 lg:hidden"
+															style={{
+																color: artwork.colorHsl as string,
+															}}
+														/>
+														<Icon
+															name="arrow-right"
+															className="icon-arrow h-4 w-4 justify-self-end lg:ml-[calc(100%-3rem)] lg:mt-4 lg:block"
+															style={{
+																color: artwork.colorHsl as string,
+															}}
 														/>
 													</div>
 												</figcaption>
 											</figure>
-										</>
-									) : (
-										<i>No Artworks found </i>
-									)}
-								</NavLink>
-							</li>
-						))
+										) : (
+											<i>No Artworks found for query {q} </i>
+										)}
+									</NavLink>
+								</li>
+							))
+						)
 					) : (
-						<li>no data</li>
+						<li className="w-15rem relative flex max-w-sm flex-wrap justify-center whitespace-pre text-lg text-yellow-50">
+							<p className="px-4 font-normal opacity-100">
+								Nothing found for query: <em> " {q} " </em>
+							</p>
+							<p className="px-4 font-semibold opacity-50">
+								(search type: <em> " {currentQueryKey} " </em>)
+							</p>
+						</li>
 					)}
 				</ul>
 			</main>
+			<div className="footer container flex items-center justify-between pb-0 pt-16">
+				<Logo />
+				<div className="relative flex">
+					<h2 className="pb-4 text-center leading-none">
+						<span className="font-semibold opacity-50">
+							query{' '}
+							<em className="font-normal opacity-100">
+								{' '}
+								{currentQueryKey}
+								{': '}
+							</em>{' '}
+						</span>
+						{q || ' '}{' '}
+						{/* same as: {location.search.split('&')[0].split('=')[1]} */}
+					</h2>
+				</div>
+			</div>
 		</>
 	)
 }
 
-// #endregion
+function Logo() {
+	return (
+		<Link to="/" className="pb-4">
+			<span className="font-light leading-none text-cyan-200 transition group-hover:-translate-x-1">
+				kunst
+			</span>
+			<span className="font-bold leading-none text-yellow-100 transition group-hover:translate-x-1">
+				räuber
+			</span>
+		</Link>
+	)
+}

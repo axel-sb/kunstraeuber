@@ -5,7 +5,7 @@ import * as React from 'react'
 import { cn } from '#app/utils/misc.tsx'
 
 const buttonVariants = cva(
-	'inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors outline-none focus-visible:ring-2 focus-within:ring-2 ring-ring ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+	'inline-flex items-center justify-center rounded-md ring-offset-background transition-colors outline-none focus-visible:ring-2 focus-within:ring-2 ring-ring ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
 	{
 		variants: {
 			variant: {
@@ -17,7 +17,7 @@ const buttonVariants = cva(
 					'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
 				secondary:
 					'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-				ghost: 'hover:text-yellow-300 w-8',
+				ghost: 'hover:bg-slate-700',
 				link: 'text-primary underline-offset-4 hover:underline',
 			},
 			size: {
@@ -28,7 +28,7 @@ const buttonVariants = cva(
 				pill: 'px-12 py-3 leading-3',
 				icon: 'h-10 w-10',
 				fill: 'h-10 w-10 px-0 py-0',
-				ghost: 'h-8 w-8',
+				ghost: 'h-10 w-10 p-2',
 			},
 		},
 		defaultVariants: {

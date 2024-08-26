@@ -4,8 +4,9 @@ import {
 	type LoaderFunctionArgs,
 	json,
 } from '@remix-run/node'
-import { NavLink, useLoaderData, useLocation } from '@remix-run/react'
+import { Link, NavLink, useLoaderData, useLocation } from '@remix-run/react'
 import chalk from 'chalk'
+import React from 'react'
 import { Icon } from '#app/components/ui/icon.js'
 import {
 	getAny,
@@ -17,15 +18,16 @@ import {
 } from '../resources+/search-data.server'
 //import artworks from './artworks.index.css?url'
 /* export const links: LinksFunction = () => [
-	{ rel: 'stylesheet', href: artworks },
+  { rel: 'stylesheet', href: artworks },
 ] */
 
 /* //§§   _________________________________ MARK: Loader
    This function is only ever run on the server. On the initial server render, it will provide data to the HTML document. On navigations in the browser, Remix will call the function via fetch from the browser.This means you can talk directly to your database, use server-only API secrets, etc. Any code that isn't used to render the UI will be removed from the browser bundle. */
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const url = new URL(request.url)
-	const query = url.searchParams.get('search') ?? undefined
-	const searchType = url.searchParams.get('searchType') ?? 'All'
+	const query = url.searchParams.get('search') ?? 'no query provided'
+	const searchType =
+		url.searchParams.get('searchType') ?? 'no search type selected'
 
 	let data
 	switch (searchType) {
@@ -49,27 +51,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 			break
 
 		default:
-			break /* = await getAny('Picasso') */
+			data = await getAny('Picasso') // break
 	}
-
-	console.group(
-		chalk.overline.underline(
-			'║artworks.index - LOADER                         🚛',
-		),
-	)
-	console.log(
-		chalk.black(
-			'url:',
-			url,
-			'searchType:',
-			searchType,
-			'❓ query:',
-			query,
-			'______________________',
-		),
-	)
-	console.groupEnd()
-	return json({ query, data })
+	return json({ searchType, query, data })
 }
 
 // #endregion import export
@@ -79,106 +63,211 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export default function ArtworksPage() {
 	const { data, query } = useLoaderData<typeof loader>()
 	const location = useLocation()
+	const searchType = useLoaderData<typeof loader>().searchType
+	// const colorHsl = useLoaderData<typeof loader>()
 
-	console.group(chalk.bold('artworks.index ______________  LOCATION  🗺️'))
 	console.log(
 		chalk.blue(
-			'🟡 location →',
-			Object.entries(location).map(([k, v]) => `${chalk.red(k)}: ${v}\n`),
+			console.group('Object.entries(location).map(([k, v]) ➜ '),
+			Object.entries(location).map(([k, v]) => `${chalk.red(k)}: ${v}  \n`),
 		),
 	)
-	console.groupEnd()
+	//§  .............................  MARK: radio btns hook
+	const [grid, setgrid] = React.useState('grid-1')
 
-	const currentQueryKey = location.search
-		.split('&')
-		.find((part) => part.startsWith('='))
-		?.split('=')[1]
+	const handleGrid1Change = () => {
+		setgrid('grid-1')
+	}
+	const handleGrid2Change = () => {
+		setgrid('grid-2')
+	}
+	const handleGrid3Change = () => {
+		setgrid('grid-3')
+	}
 
+	type RadioButtonProps = {
+		value: string
+		name: 'grid-1' | 'grid-2' | 'grid-3'
+		onChange: () => void
+	}
+	const RadioButton = ({ value, name, onChange }: RadioButtonProps) => {
+		const checked = value === name
+
+		return (
+			<label>
+				<input
+					type="radio"
+					name={name}
+					checked={checked}
+					onChange={() => onChange()}
+					className="group invisible h-0 has-[input[type='radio']:checked]:text-yellow-100"
+				/>
+				<Icon
+					name={name}
+					size="font"
+					className="text-slate-600 group-has-[input[type='radio']:checked]:inline-flex group-has-[input[type='radio']:checked]:animate-pulse group-has-[input[type='radio']:checked]:text-slate-100"
+				/>
+			</label>
+		)
+	}
+	/* // !. _____________________________________________________________________  	MARK: return
+	 */
 	return (
-		//+ ___________________________________________  return  JSX ↓
 		<>
-			<main className="flex flex-col items-center overscroll-contain">
-				<ul className="artworks-fade-in flex w-full touch-pan-y snap-y list-none flex-col items-center justify-start gap-y-28 overflow-y-auto overflow-x-visible overscroll-contain pb-28 pt-12">
-					{data ? (
+			{/* // !.			__________________________________________________________			MARK: header
+			 */}
+
+			<header className="container grid max-w-[843px] grid-cols-[1fr_1fr] grid-rows-1 justify-between gap-4 rounded-bl-2xl rounded-br-2xl py-6">
+				<Logo />
+				{/*
+           //§ ............................. MARK: radio btn group
+        */}
+
+				<form className="form place-self-center">
+					<div className="group/radio grid grid-cols-3 place-items-center rounded border-[0.5px] border-solid border-slate-500/50 pb-1 pl-0 pr-3 pt-0 text-lg text-yellow-50/50 md:gap-4 md:text-xl">
+						<RadioButton
+							name="grid-1"
+							value={grid}
+							onChange={handleGrid1Change}
+						/>
+						<RadioButton
+							name="grid-2"
+							value={grid}
+							onChange={handleGrid2Change}
+						/>
+
+						<RadioButton
+							name="grid-3"
+							value={grid}
+							onChange={handleGrid3Change}
+						/>
+					</div>
+				</form>
+			</header>
+			<main className="flex items-center justify-center px-4 py-16 sm:p-10 md:px-12 lg:px-16 xl:px-24 2xl:px-32">
+				{/*{' '}
+				<ul className="artworks-fade-in group grid w-screen max-w-screen-xl grid-flow-row-dense gap-2 group-has-[label:nth-child(1)>input[type='radio']:checked]/body:grid-cols-1 group-has-[label:nth-child(2)>input[type=radio]:checked]/body:grid-cols-2 group-has-[label:nth-child(3)>input[type=radio]:checked]/body:grid-cols-3 md:gap-24 xl:gap-48">
+					{' '}
+					*/}
+
+				<ul className="max-h-[250rem] w-full gap-x-[3%] [column-fill:balance] [column-width:300px]">
+					{data !== undefined && data.length > 0 ? (
 						data.map((artwork) => (
 							<li
 								key={artwork.id}
-								className="flex max-h-fit snap-center items-center"
+								className="flex max-h-fit items-center justify-center"
+								style={{
+									containerType: 'inline-size',
+									containerName: 'list-item',
+								}}
 							>
 								<NavLink
 									className={({ isActive, isPending }) =>
-										isActive ? 'active' : isPending ? 'pending' : ''
+										isActive ? 'active' : isPending ? 'pending' : '' + 'w-full'
 									}
 									to={`./${artwork.id}`}
 								>
-									{artwork.Title ? (
-										<>
-											<figure className="relative z-40 mx-auto grid max-h-full max-w-[281px] place-items-center gap-12 lg:max-w-[843px] lg:-translate-x-28">
-												<img
-													style={{
-														maxHeight: 'calc(100dvh - 4rem)',
-														maxWidth: 'clamp(10%, 281px, 100%)',
-													}}
-													alt={artwork.alt_text ?? undefined}
-													key={artwork.id}
-													src={artwork.image_url ?? '../dummy.jpeg'}
-												/>
-												{/*
-                                            //   Figcaption
-                                            */}
-												<figcaption className="lg:max-w-calc[100vw-1700px] z-50 flex w-full justify-start pt-8 lg:absolute lg:-right-8 lg:top-32 lg:max-w-fit lg:translate-x-full">
-													<div className="relative mr-auto w-[calc(100%-2rem)] text-sm">
-														<div className="max-w-[calc(100%-3rem)]">
-															{artwork.Title}
-														</div>
+									<figure className="relative flex w-full flex-col gap-2">
+										<img
+											alt={artwork.alt_text ?? undefined}
+											key={artwork.id}
+											src={artwork.image_url ?? '../dummy.jpeg'}
+											className="rounded-md md:rounded-lg"
+										/>
 
-														<div className="w-[calc(100%-2rem)] font-semibold opacity-50">
-															{artwork.Artist}
-														</div>
-														<Icon
-															name="eye-open"
-															className="icon-eye absolute -right-6 top-0 h-6 w-6 lg:hidden"
-														/>
-														<Icon
-															name="arrow-right"
-															className="icon-arrow hidden h-6 w-6 lg:ml-[calc(100%-3rem)] lg:mt-4 lg:block"
-														/>
-													</div>
-												</figcaption>
-											</figure>
-										</>
-									) : (
-										<i>No Artworks found for query {query} </i>
-									)}
+										{/*
+                       //§   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .    MARK: Figcaption
+                  */}
+										<figcaption className="z-50 flex w-full flex-wrap justify-between whitespace-normal">
+											<div className="group-has-[input[type=radio]]:grid-cols-2]:justify-self-start relative flex w-full flex-wrap">
+												<div className="">
+													{artwork.title} {'  '}
+												</div>
+												<div className="figcaption-artist w-[calc(100%-1.5rem)] font-semibold opacity-50">
+													{artwork.artist_title}
+												</div>
+												<div className="w-full pt-2">
+													<Icon
+														name="eye-open"
+														size="font"
+														className="icon-eye block"
+														style={{
+															color: artwork.colorHsl as string,
+														}}
+													/>
+												</div>
+												{/*{' '}
+												<Icon
+													name="arrow-right"
+													className="icon-arrow hidden h-4 w-4 justify-self-end lg:ml-[calc(100%-3rem)] lg:mt-4"
+													style={{
+														color: artwork.colorHsl as string,
+													}}
+												/>{' '}
+												*/}
+											</div>
+										</figcaption>
+									</figure>
 								</NavLink>
 							</li>
 						))
 					) : (
-						<li className="w-15rem relative flex max-w-sm flex-wrap justify-center whitespace-pre text-lg text-yellow-50">
-							<p className="px-4 font-normal opacity-100">
-								Nothing found for query: <em> " {query} " </em>
-							</p>
-							<p className="px-4 font-semibold opacity-50">
-								(search type: <em> " {currentQueryKey} " </em>)
-							</p>
-						</li>
+						<section className="col-span-3 p-10">
+							<h2 className="mx-auto w-full text-lg text-yellow-50">
+								Nothing found for: {'  '}
+								<strong>
+									<em> " {query} " </em>
+								</strong>
+							</h2>
+							<h3 className="font-semibold opacity-80">
+								Search type: <em> " {searchType} " </em>
+							</h3>
+						</section>
 					)}
 				</ul>
 			</main>
-			<div className="relative flex">
-				<h2 className="absolute -bottom-20 right-4 pb-4 text-center leading-none">
-					<span className="font-semibold opacity-50">
-						query{' '}
-						<em className="font-normal opacity-100">
-							{' '}
-							{currentQueryKey}
-							{': '}
-						</em>{' '}
-					</span>
-					{query || ' '}{' '}
-					{/* same as: {location.search.split('&')[0].split('=')[1]} */}
-				</h2>
-			</div>
+
+			<Footer />
 		</>
+	)
+}
+
+//§   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .    MARK: Logo
+
+function Logo() {
+	return (
+		<Link to="/" className="group/logo grid leading-snug">
+			<span className="font-light leading-none text-cyan-200 transition group-hover/logo:-translate-x-1">
+				kunst
+			</span>
+			<span className="font-bold leading-none text-yellow-100 transition group-hover/logo:translate-x-1">
+				räuber
+			</span>
+		</Link>
+	)
+}
+//§   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .    MARK: Footer
+
+function Footer() {
+	const searchType = useLoaderData<typeof loader>().searchType
+	const query = useLoaderData<typeof loader>().query
+	return (
+		<footer className="search-params relative col-span-2 flex items-center justify-between gap-4 px-4 py-6">
+			<div className="text-center leading-none">
+				<span className="font-semibold opacity-50">search </span>
+				<span>
+					<em className="font-normal opacity-100">
+						{searchType} <Icon name="arrow-right" />
+					</em>{' '}
+				</span>
+				{query || ' '}{' '}
+				{/* same as: {location.search.split('&')[0].split('=')[1]} */}
+			</div>
+
+			<div className="text-right leading-none">
+				<span className="font-semibold opacity-50">page: </span>{' '}
+				<em className="font-normal opacity-100">{useLocation().pathname} </em>{' '}
+			</div>
+		</footer>
 	)
 }

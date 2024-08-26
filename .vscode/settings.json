@@ -19,16 +19,18 @@
 	"workbench.colorCustomizations": {
         "commandCenter.border": "#15202b99",
         "sash.hoverBorder": "#61dafb",
-        "tab.activeBorder": "#61dafb",
         "titleBar.activeBackground": "#61dafb",
         "titleBar.activeForeground": "#15202b",
         "titleBar.inactiveBackground": "#61dafb99",
-        "titleBar.inactiveForeground": "#15202b99"
+        "titleBar.inactiveForeground": "#15202b99",
+        "tab.activeBorder": "#61dafb"
     },
 	"peacock.color": "#61dafb",
 	// "editor.fontFamily": "Operator Mono Lig",
-	"editor.fontWeight": "500",
-	"editor.fontSize": 16,
+	"editor.fontFamily": "PragmataPro Mono",
+	"editor.fontLigatures": "'calt', 'liga', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06, 'ss07', 'ss08', 'ss09', /* 'dlig', 'frac', 'c2sc', 'dnom' */",
+	"editor.fontWeight": "400",
+	"editor.fontSize": 15,
 	"editor.lineHeight": 0,
 	"markdownAutoTOC.maximumHeadingLevel": 6,
 	// ............................. codeActionsOnSave
@@ -40,5 +42,24 @@
 		"source.organizeImports": "all",
 		"source.addMissingImports": "all",
 		"source.fixAll.eslint": "all"
-	}
+	},
+	"svg.preview.background": "dark-transparent",
+	//_ indentRainbow
+	"indentRainbow.lightIndicatorStyleLineWidth": 1,,
+	"indentRainbow.indicatorStyle": "light",
+  // works only with HTML and XML:
+	"rainbowTags.colors": [
+		"#e6b422",
+		"#c70067",
+		"#707070",
+		"#E7E7E7",
+		"#00ffb6",
+		"#6d7d00"
+	],
+	"indentRainbow.colors": [
+		// "rgba(255,217,1,0.7)",
+		// "rgba(127,225,127,0.7)",
+		"rgba(255,127,255,0.3)",
+		"rgba(79,216,216,0.4)"
+	]
 }

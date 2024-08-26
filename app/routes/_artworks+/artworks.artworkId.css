@@ -57,13 +57,6 @@ main {
 	} */
 }
 
-details > summary {
-	list-style: none;
-
-	&::-webkit-details-marker {
-		display: none;
-	}
-}
 
 details .btn-view {
 	display: flex;

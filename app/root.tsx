@@ -12,6 +12,7 @@ import {
 	Links,
 	Meta,
 	Outlet,
+	// redirect,
 	Scripts,
 	ScrollRestoration,
 	useLoaderData,
@@ -54,6 +55,7 @@ import {
 	getPlace,
 	getDate,
 	getColor,
+	getType,
 } from './routes/resources+/search-data.server.tsx'
 import { ThemeSwitch } from './routes/resources+/theme-switch.tsx'
 
@@ -91,7 +93,7 @@ export const links: LinksFunction = () => {
 			href: '/site.webmanifest',
 			crossOrigin: 'use-credentials',
 		} as const, // necessary to make typescript happy
-		{ rel: 'icon', type: 'image/svg+xml', href: '/favicons/favicon.svg' },
+		{ rel: 'icon', type: 'image/png', href: '/favicons/favicon.png' },
 		{ rel: 'stylesheet', href: tailwindStyleSheetUrl },
 		{ rel: 'stylesheet', href: globalStyles },
 	].filter(Boolean)
@@ -108,7 +110,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 }
 // #endregion imports, links, meta
 
-//§ __ ____________________________________________  MARK: Loader
+//§   ...........................   MARK: Loader
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const timings = makeTimings('root loader')
@@ -152,6 +154,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 	const url = new URL(request.url)
 	const query = url.searchParams.get('search') ?? undefined
+	/* if (!query) {
+        url.searchParams.set('search', 'Picasso')
+        return redirect(url.pathname + url.search)
+    } */
 	const searchType = url.searchParams.get('searchType') ?? ''
 
 	let data
@@ -165,6 +171,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		case 'style':
 			data = await getStyle(query)
 			break
+		case 'type':
+			data = await getType(query)
+			break
 		case 'place':
 			data = await getPlace(query)
 			break
@@ -176,9 +185,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
 			break
 
 		default:
-			break
+			data = await getAny('Picasso') // break
 		/* data = await getArtist('Picasso') */
 	}
+
+	console.log('🟡 searchType →', searchType)
 
 	return json(
 		{
@@ -204,7 +215,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 			),
 		},
 	)
-	console.log('🟡 searchType →', searchType)
 }
 
 export const headers: HeadersFunction = ({ loaderHeaders }) => {
@@ -213,6 +223,8 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
 	}
 	return headers
 }
+
+//§   ...........................   MARK: Document
 
 function Document({
 	children,
@@ -239,7 +251,7 @@ function Document({
 				)}
 				<Links />
 			</head>
-			<body className="h-dvh w-full flex flex-col bg-background text-foreground">
+			<body className="group/body bg-background text-foreground">
 				{children}
 				<script
 					nonce={nonce}
@@ -260,7 +272,9 @@ function Document({
  * @return {React.ReactNode} The main React component for the entire application.
  */
 
-function App() {
+//§   ...........................   MARK: App
+
+function App(): React.ReactNode {
 	const data = useLoaderData<typeof loader>()
 	const nonce = useNonce()
 	const user = useOptionalUser()
@@ -275,114 +289,196 @@ function App() {
 
 	const [searchParams, setsearchParams] = useSearchParams()
 	const [searchType, setSearchType] = useState<
-		| 'all'
-		| 'artist'
-		| 'style'
-		| 'place'
-		| 'date'
-		| 'color'
-		| 'subject'
-		| 'term'
-		| ''
+		'all' | 'artist' | 'style' | 'place' | 'date' | 'color' | 'type' | ''
 	>('')
 
-	// console.log('🟡 matches =', matches)
-	/* 2024-07-17 prevent auto submit (commented out)
-    const submit = useSubmit()
-	const handleFormChange = useDebounce((form: HTMLFormElement) => {
-		submit(form)
-	}, 400)
-    // const isSubmitting = useIsPending({
-		formMethod: 'GET',
-		formAction: '/users',
-	})
-	// const isPending = useIsPending()
-	// const formRef = useRef<HTMLFormElement>(null)
-	// const isOnSearchPage = matches.find((m) => m.id === 'routes/users+/index')
-	// console.log('🔵 location →', location)
-    */
+	//§   ...............................................   MARK: return  ⮐
+
 	return (
 		<Document nonce={nonce} allowIndexing={allowIndexing} env={data.ENV}>
 			{location.pathname === '/' ? (
-				<header className="container py-6">
-					<nav className="flex flex-wrap items-center justify-between gap-4 md:max-w-2xl md:flex-nowrap md:gap-8 lg:max-w-3xl m-auto">
-						{/* <Logo /> */}
-						<div className="flex items-center gap-10">
-							{user ? (
-								<UserDropdown />
-							) : (
-								<Button asChild variant="default" size="lg">
-									<Link to="/login">Log In</Link>
-								</Button>
-							)}
-						</div>
-						{/*  //§§                                   MARK: Search Bar */}
+				<>
+					<div className="m-auto flex h-full w-fit flex-col items-center justify-between px-0">
+						<header className="hd container mx-auto max-w-[843px] py-4 md:py-5">
+							<nav className="mx-auto flex flex-wrap items-center justify-between gap-4 md:flex-nowrap md:gap-8">
+								<Logo />
 
-						<div className="search-bar block w-full rounded-md ring-0 ring-yellow-100/50 ring-offset-[.5px] ring-offset-yellow-50/50 lg:max-w-4xl xl:max-w-5xl">
-							<Form
-								method="GET"
-								action="/artworks/"
-								className="no-wrap flex items-center justify-center gap-2"
-								/* onChange={(e) => handleFormChange(e.currentTarget)} */
-							>
-								{/* //§§  __ __________________________ MARK: SearchInput  */}
-								{/* //§§  https://www.jacobparis.com/ui/combobox-multiple  */}
+								{/*
+                   //§   .......................................   MARK: SearchBar SM🔎
+                */}
 
-								{/* To explicitly associate a <label> element with an <input> element, you first need to add the id attribute to the <input> element. Next, you add the for attribute to the <label> element, where the value of for is the same as the id in the <input> element.
-
-                                Alternatively, you can nest the <input> directly inside the <label>, in which case the for and id attributes are not needed because the association is implicit: */}
-
-								<div className="flex-1 rounded-md">
-									<Label htmlFor={id} className="sr-only">
-										Search
-									</Label>
-									<Input
-										id={id}
-										type="search"
-										name="search"
-										defaultValue={searchParams.get('search') ?? ''}
-										placeholder={`Search ${searchType}`}
-										className="w-full border-0"
-										onChange={(e) => setsearchParams(e.target.value)}
-									/>
-								</div>
-								<div className="splitbutton flex max-w-sm flex-[.5] rounded-md">
-									<SelectSearchType
-										searchType={searchType}
-										setSearchType={setSearchType}
-									/>
-
-									{/* //§§  __  ______________  MARK: Status Button */}
-
-									<StatusButton
-										type="submit"
-										status={isPending ? 'pending' : 'idle'}
-										className="flex flex-1 items-center justify-center border-0 pl-4 pr-2 shadow-none"
+								<div className="search-bar mx-auto hidden max-w-sm flex-1 rounded-md bg-opacity-90 ring-0 ring-yellow-100/50 ring-offset-[.5px] ring-offset-yellow-50/50 sm:block lg:max-w-4xl xl:max-w-5xl">
+									<Form
+										method="GET"
+										action="/artworks"
+										className="no-wrap flex items-center justify-center gap-0"
+										/* onChange={(e) => handleFormChange(e.currentTarget)} */
 									>
-										<Icon name="magnifying-glass" size="lg" />
-										<span className="sr-only">Search</span>
-									</StatusButton>
+										{/*
+                       //§                                             MARK: SearchInput ⌨️
+                       //§ ............... https://www.jacobparis.com/ui/combobox-multiple
+                    */}
+
+										{/*
+                    To explicitly associate a <label> element with an <input> element, you first need to add the id attribute to the <input> element. Next, you add the for attribute to the <label> element, where the value of for is the same as the id in the <input> element.
+
+                    Alternatively, you can nest the <input> directly inside the <label>, in which case the for and id attributes are not needed because the association is implicit:
+                    */}
+
+										<div className="flex-1 rounded-md">
+											<Label htmlFor={id} className="sr-only">
+												Search
+											</Label>
+											<Input
+												id={id}
+												type="search"
+												name="search"
+												defaultValue={searchParams.get('search') ?? ''}
+												placeholder={`Search ${searchType}`}
+												className="w-full border-0"
+												onChange={(e) => setsearchParams(e.target.value)}
+											/>
+										</div>
+										{/* //§   ..............................   MARK: Status Button  🔄
+										 */}
+
+										<StatusButton
+											type="submit"
+											status={isPending ? 'pending' : 'idle'}
+											className="flex max-w-12 flex-1 items-center justify-center border-0 px-2 shadow-none"
+										>
+											<Icon name="magnifying-glass" size="lg" />
+											<span className="sr-only">Search</span>
+										</StatusButton>
+										{/* //§   ...........................   MARK: Split Button 🔽
+										 */}
+										<div className="splitbutton flex rounded-md border-0 px-2 shadow-gray-50">
+											<SelectSearchType
+												searchType={searchType}
+												setSearchType={setSearchType}
+											/>
+										</div>
+									</Form>
 								</div>
-							</Form>
+
+								{/*
+                   //§   ..........................................   MARK: User 龜
+                */}
+
+								<div className="flex items-center gap-10 pr-0">
+									{user ? (
+										<UserDropdown />
+									) : (
+										<Button asChild variant="default" size="lg">
+											<Link to="/login">Log In</Link>
+										</Button>
+									)}
+								</div>
+
+								{/*
+                   //§   .......................................   MARK: Search Bar 🔎
+                */}
+
+								<div className="search-bar block w-full rounded-md ring-0 ring-yellow-100/25 ring-offset-[.5px] ring-offset-yellow-50/25 sm:hidden">
+									<Form
+										method="GET"
+										action="/artworks"
+										className="no-wrap flex items-center justify-center gap-2"
+										/* onChange={(e) => handleFormChange(e.currentTarget)} */
+									>
+										{/*
+                    // https://www.jacobparis.com/ui/combobox-multiple
+										To explicitly associate a <label> element with an <input> element, you first need to add the id attribute to the <input> element. Next, you add the for attribute to the <label> element, where the value of for is the same as the id in the <input> element.
+                    Alternatively, you can nest the <input> directly inside the <label>, in which case the for and id attributes are not needed because the association is implicit:
+                    //§    ................................................ MARK: SearchInput  ⌨️
+                    */}
+
+										<div className="flex-1 rounded-md">
+											<Label htmlFor={id} className="sr-only">
+												Search
+											</Label>
+											<Input
+												id={id}
+												type="search"
+												name="search"
+												defaultValue={searchParams.get('search') ?? ''}
+												placeholder={`Search ${searchType}`}
+												className="w-full border-0"
+												style={{
+													border: '5px solid #0000',
+													borderRadius: '25px',
+													background: `conicGradient(#fff  0 0) padding-box, linearGradient(#FF4E50,#40C0CB) border-box`,
+												}}
+												onChange={(e) => setsearchParams(e.target.value)}
+											/>
+										</div>
+
+										{/* //§   .....................................   MARK: Status Button 🔄
+										 */}
+
+										<StatusButton
+											type="submit"
+											status={isPending ? 'pending' : 'idle'}
+											className="flex h-6 w-6 items-center justify-center border-0 px-2 shadow-none"
+										>
+											<Icon name="magnifying-glass" size="lg" />
+											<span className="sr-only">Search</span>
+										</StatusButton>
+
+										{/* //§   ......................................   MARK: Split Button 🔽
+										 */}
+
+										<div className="splitbutton flex w-10 rounded-md border-l-emerald-100 shadow-gray-50">
+											<SelectSearchType
+												searchType={searchType}
+												setSearchType={setSearchType}
+											/>
+										</div>
+									</Form>
+								</div>
+							</nav>
+						</header>
+
+						<figure className="inline-flex !max-h-[clamp(1rem,calc(100dvh-10rem),calc(100dvh-10rem))] flex-col items-center pt-2">
+							<img
+								className="animate-hue max-h-[calc(100dvh-18rem)] max-w-[calc(100vw-2rem)] rounded-sm object-contain sm:max-w-[clamp(283px,calc(100%-2rem),min(843px,100%))]"
+								alt="A work made of acrylic and silkscreen ink on linen."
+								src="four-mona-lisas.jpg"
+								data-rdt-source="/Volumes/Samsung/_Projects-on-Samsung/Remix/artepic/app/routes/_artworks+/artworks.$artworkId.tsx:::247"
+							/>
+							<figcaption className="relative pt-8 text-lg opacity-85">
+								Four Mona Lisas, 1978
+							</figcaption>
+						</figure>
+
+						<div className="footer flex h-12 w-full items-center justify-between p-4">
+							<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
+							<Help />
 						</div>
-					</nav>
-				</header>
+					</div>
+				</>
 			) : null}
 
 			<Outlet />
 
 			{/*
-            //§§  __ ___________________ MARK: Footer, Logo, Toaster */}
-
+         //§   ..........................................   MARK: Footer  ┗━┛
+      */}
 			{/* <div className="footer container flex items-center justify-between py-3">
 				<Logo />
 				<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
 				<Help />
 			</div>
-			<EpicToaster closeButton position="top-center" theme={theme} />
-			<EpicProgress /> */}
 
-			<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
+           <EpicProgress />
+
+
+			{location.pathname === '/' ||
+			location.pathname === '/artworks.$artworkId' ? (
+				<>
+					<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
+				</>
+			) : null} */}
 		</Document>
 	)
 }
@@ -397,6 +493,12 @@ function AppWithProviders() {
 }
 
 export default withSentry(AppWithProviders)
+
+{
+	/*
+    //§   ..........................................   MARK: User Dropdown
+  */
+}
 
 function UserDropdown() {
 	const user = useUser()
@@ -417,9 +519,7 @@ function UserDropdown() {
 							alt={user.name ?? user.username}
 							src={getUserImgSrc(user.image?.id)}
 						/>
-						<span className="text-body-sm font-bold">
-							{user.name ?? user.username}
-						</span>
+						<span className="text-body-sm">{user.name ?? user.username}</span>
 					</Link>
 				</Button>
 			</DropdownMenuTrigger>
@@ -459,7 +559,7 @@ function UserDropdown() {
 	)
 }
 
-//§ __ ____________________________________  MARK: SelectSearchType
+//§   ...........................   MARK: SelectSearchType
 
 interface SelectSearchTypeProps {
 	searchType:
@@ -470,31 +570,24 @@ interface SelectSearchTypeProps {
 		| 'all'
 		| 'artist'
 		| 'place'
-		| 'subject'
-		| 'term'
+		| 'type'
 	setSearchType: React.Dispatch<
 		React.SetStateAction<
-			| ''
-			| 'color'
-			| 'style'
-			| 'date'
-			| 'all'
-			| 'artist'
-			| 'place'
-			| 'subject'
-			| 'term'
+			'' | 'color' | 'style' | 'date' | 'all' | 'artist' | 'place' | 'type'
 		>
 	>
 }
 
 function SelectSearchType({
-	searchType,
+	//searchType,
 	setSearchType,
 }: SelectSearchTypeProps) {
+	const isPending = useIsPending({ formMethod: 'GET', formAction: '/artworks' })
 	return (
 		<Select
 			name="searchType"
-			value={searchType}
+			required={true}
+			value=""
 			onValueChange={(value) => {
 				const searchType = value as
 					| 'all'
@@ -502,6 +595,7 @@ function SelectSearchType({
 					| 'style'
 					| 'place'
 					| 'date'
+					| 'type'
 					| 'color'
 
 				setSearchType(searchType)
@@ -511,18 +605,98 @@ function SelectSearchType({
 				}
 			}}
 		>
-			<SelectTrigger className="w-full">
-				<SelectValue placeholder={searchType ? `${searchType}` : 'All'} />
+			<SelectTrigger className="w-10 p-2">
+				<SelectValue placeholder={/* searchType ? `${searchType}` : */ ''} />
 			</SelectTrigger>
 			<SelectContent>
-				<SelectItem value="all">All</SelectItem>
-				<SelectItem value="artist">Artist</SelectItem>
-				<SelectItem value="style">Style</SelectItem>
-				<SelectItem value="place">Place</SelectItem>
-				<SelectItem value="date">Date</SelectItem>
-				<SelectItem value="color">Color</SelectItem>
+				<SelectItem value="all">
+					<StatusButton
+						type="submit"
+						status={isPending ? 'pending' : 'idle'}
+						className="flex h-6 w-6 items-center justify-center border-0 pl-4 pr-2 shadow-none"
+					>
+						All
+					</StatusButton>
+				</SelectItem>
+				<SelectItem value="artist">
+					<StatusButton
+						type="submit"
+						status={isPending ? 'pending' : 'idle'}
+						className="flex h-6 w-6 items-center justify-center border-0 pl-4 pr-2 shadow-none"
+					>
+						Artist
+					</StatusButton>
+				</SelectItem>
+				<SelectItem value="style">
+					<StatusButton
+						type="submit"
+						status={isPending ? 'pending' : 'idle'}
+						className="flex h-6 w-6 items-center justify-center border-0 pl-4 pr-2 shadow-none"
+					>
+						Style
+					</StatusButton>
+				</SelectItem>
+				<SelectItem value="place">
+					<StatusButton
+						type="submit"
+						status={isPending ? 'pending' : 'idle'}
+						className="flex h-6 w-6 items-center justify-center border-0 pl-4 pr-2 shadow-none"
+					>
+						Place
+					</StatusButton>
+				</SelectItem>
+				<SelectItem value="date">
+					<StatusButton
+						type="submit"
+						status={isPending ? 'pending' : 'idle'}
+						className="flex h-6 w-6 items-center justify-center border-0 pl-4 pr-2 shadow-none"
+					>
+						Date
+					</StatusButton>
+				</SelectItem>
+				<SelectItem value="type">
+					<StatusButton
+						type="submit"
+						status={isPending ? 'pending' : 'idle'}
+						className="flex h-6 w-6 items-center justify-center border-0 pl-4 pr-2 shadow-none"
+					>
+						Type
+					</StatusButton>
+				</SelectItem>
+				<SelectItem value="color">
+					<StatusButton
+						type="submit"
+						status={isPending ? 'pending' : 'idle'}
+						className="flex h-6 w-6 items-center justify-center border-0 pl-4 pr-2 shadow-none"
+					>
+						Color
+					</StatusButton>
+				</SelectItem>
 			</SelectContent>
 		</Select>
+	)
+}
+
+function Logo() {
+	return (
+		<Link to="/" className="group grid px-2 leading-snug sm:px-6">
+			<span className="font-light leading-none text-cyan-200 transition group-hover:-translate-x-1">
+				kunst
+			</span>
+			<span className="font-bold leading-none text-yellow-100 transition group-hover:translate-x-1">
+				räuber
+			</span>
+		</Link>
+	)
+}
+
+//§   ...........................   MARK: Help
+
+function Help() {
+	return (
+		<Button variant="ghost" size="ghost" className="ml-auto">
+			<Icon name="question-mark-circled" className="border-0" size="md"></Icon>
+		</Button>
 	)
 }
 

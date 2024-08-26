@@ -35,7 +35,8 @@
 		--radius: 0.5rem;
 	} */
 
-	:root, .dark {
+	:root,
+	.dark {
 		--background: 20 14.3% 4.1%;
 		--foreground: 38 14% 80%;
 
@@ -49,8 +50,9 @@
 		--primary-foreground: 38 14% 80%;
 
 		--secondary: 227 21% 21% / 50%;
+		/* 188 75% 25% / 25%; */
 		/* --secondary-foreground: 38 14% 50%; */
-        --secondary-foreground: 0 0% 40%;
+		--secondary-foreground: 55 97% 88% / 50%;
 
 		--muted: 12 6.5% 15.1%;
 		--muted-foreground: 24 5.4% 63.9%;
@@ -65,7 +67,7 @@
 		--input: 12 6.5% 15.1%;
 		--ring: 227 21% 21% / 50%;
 
-        --radius: 0.5rem;
+		--radius: 0.5rem;
 	}
 }
 
@@ -77,4 +79,3 @@
 		@apply bg-background text-foreground;
 	}
 }
-        

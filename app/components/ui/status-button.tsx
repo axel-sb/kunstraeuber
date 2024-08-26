@@ -19,15 +19,15 @@ export const StatusButton = React.forwardRef<
 	}
 >(({ message, status, className, children, spinDelay, ...props }, ref) => {
 	const delayedPending = useSpinDelay(status === 'pending', {
-		delay: 400,
-		minDuration: 300,
+		delay: 200,
+		minDuration: 5000,
 		...spinDelay,
 	})
 	const companion = {
 		pending: delayedPending ? (
 			<div
 				role="status"
-				className="inline-flex h-6 w-6 items-center justify-center"
+				className="inline-flex h-8 w-8 items-center justify-center"
 			>
 				<Icon name="update" className="animate-spin" title="loading" />
 			</div>
@@ -35,7 +35,7 @@ export const StatusButton = React.forwardRef<
 		success: (
 			<div
 				role="status"
-				className="inline-flex h-6 w-6 items-center justify-center"
+				className="inline-flex h-8 w-8 items-center justify-center"
 			>
 				<Icon name="check" title="success" />
 			</div>
@@ -43,7 +43,7 @@ export const StatusButton = React.forwardRef<
 		error: (
 			<div
 				role="status"
-				className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-destructive"
+				className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-destructive"
 			>
 				<Icon
 					name="cross-1"

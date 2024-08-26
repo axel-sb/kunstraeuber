@@ -25,6 +25,7 @@ export default {
 	},
 	presets: [marketingPreset],
 	plugins: [
+		require('tailwindcss-radix')(),
 		animatePlugin,
 		radixPlugin,
 		plugin(function ({ matchUtilities, theme }) {

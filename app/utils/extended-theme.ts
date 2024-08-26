@@ -99,4 +99,9 @@ export const extendedTheme = {
 	animation: {
 		'caret-blink': 'caret-blink 1.25s ease-out infinite',
 	},
+	gridTemplateColumns: {
+		'3cols': '1rem, auto, 1rem',
+		'2rows': 'auto, 4rem',
+		// footer: '200px minmax(900px, 1fr) 100px',
+	},
 } satisfies Config['theme']

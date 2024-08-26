@@ -83,7 +83,7 @@ export function ThemeSwitch({
 				)}
 			</ServerOnly>
 			<input type="hidden" name="theme" value={nextMode} />
-			<div className="flex gap-2">
+			<div className="flex gap-2 items-center">
 				<button
 					type="submit"
 					className="flex h-8 w-8 cursor-pointer items-center justify-center"

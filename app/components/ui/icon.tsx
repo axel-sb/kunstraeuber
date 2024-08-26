@@ -18,7 +18,7 @@ const sizeClassName = {
 type Size = keyof typeof sizeClassName
 
 const childrenSizeClassName = {
-	font: 'gap-1.5',
+	font: 'gap-3',
 	xs: 'gap-1.5',
 	sm: 'gap-1.5',
 	md: 'gap-2',
