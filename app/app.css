@@ -17,6 +17,7 @@ h6 {
 
 :root {
 	--clamped: clamp(106.25%, 1rem + 0.5vw, 1.5rem);
+	--padding-inline: 1rem;
 	font-size: var(--clamped);
 	--background: hsl(20 14.3 4.1);
 	color-scheme: dark;
@@ -45,6 +46,57 @@ h6 {
   */
 }
 
+/* GRID adapted from artworks.artworkId.css */
+.grid-container {
+	display: grid;
+	grid-template-columns:
+		var(--padding-inline) minmax(10px, 5rem) minmax(10px, max-content)
+		minmax(10px, 5rem) var(--padding-inline);
+	grid-template-rows: min-content min-content 1fr min-content;
+	align-items: center;
+	justify-content: space-between;
+}
+
+/* nav {
+	display: grid;
+	grid-template-columns: minmax(10px, min-content) minmax(10px, 1fr) minmax(
+			10px,
+			min-content
+		);
+	grid-template-rows: min-content;
+	justify-content: space-between;
+} */
+
+.logo {
+	display: inline-grid;
+	grid-column: 2 / 3;
+	grid-row: 1;
+	justify-self: start;
+	padding: 1rem 0;
+	justify-content: start;
+}
+
+.user {
+	grid-column: 4 /5;
+	grid-row: 1;
+	justify-self: end;
+	padding: 1rem 0;
+}
+
+.search-bar {
+	grid-column: 2 / 5;
+	grid-row: 2;
+	justify-self: center;
+	align-self: start;
+}
+
+
+
+footer {
+	position: sticky;
+	top: 100vh;
+}
+
 /*
 @property --100vw {
 	syntax: '<length>';
@@ -59,7 +111,7 @@ h6 {
 }
 */
 
-body:has(details[open]) {
+/* body:has(details[open]) {
 	div.wrapper:nth-child(1) {
 		display: none !important;
 	}
@@ -69,7 +121,7 @@ body:has(details[open]) {
 	div.wrapper:nth-child(2) {
 		display: flex !important;
 	}
-}
+} */
 
 /* background: radial-gradient(circle at -50% 50%, #0000, #f0f 5%, #0000)!important; */
 /* background: #000!important; */
@@ -84,7 +136,10 @@ body:has(details[open]) {
 	content: counter(val);
 } */
 
-div.wrapper:nth-child(1).animated-gradient {
+/*+                                           MARK: artwork$id wrapper
+animated gradient */
+
+.animated-gradient {
 	background: radial-gradient(
 			300px circle at 55% 60% in oklab,
 			var(--shine-2),
@@ -106,7 +161,7 @@ div.wrapper:nth-child(1).animated-gradient {
 		--shine-1: initial;
 	}
 	to {
-		--shine-1: orange;
+		--shine-1: #3f3f34;
 	}
 }
 
@@ -115,26 +170,26 @@ div.wrapper:nth-child(1).animated-gradient {
 		--shine-2: initial;
 	}
 	to {
-		--shine-2: hotpink;
+		--shine-2: #535345;
 	}
 }
 
 @property --card-bg {
 	syntax: '<color>';
 	inherits: false;
-	initial-value: #c0bae8;
+	initial-value: #555547;
 }
 
 @property --shine-1 {
 	syntax: '<color>';
 	inherits: false;
-	initial-value: #ffbbc0;
+	initial-value: #a09f83;
 }
 
 @property --shine-2 {
 	syntax: '<color>';
 	inherits: false;
-	initial-value: #c0aecb;
+	initial-value: #4a4a3d;
 }
 
 /*§     _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _     */
@@ -179,7 +234,14 @@ body {
 	}
 }
 
-/* Search Bar .......................... */
+/* MARK: Select ............................. */
+
+.SelectIcon {
+	width: 1.5rem;
+	height: 1.5rem;
+}
+
+/* MARK: Search Bar .......................... */
 
 input:-webkit-autofill,
 input:-webkit-autofill:focus {
@@ -207,6 +269,10 @@ input[type='select'] {
 	}
 }
 
+div.search-bar svg {
+	opacity: 0.75;
+}
+
 /* div[data-radix-popper-content-wrapper] {
 	transform: translate(1rem, 6rem) !important;
 	background: var(--background) !important;
@@ -215,10 +281,6 @@ input[type='select'] {
 /* Enable panning and pinch zoom gestures, but disable additional non-standard gestures such as double-tap to zoom. Disabling double-tap to zoom removes the need for browsers to delay the generation of click events when the user taps the screen.  */
 button {
 	touch-action: manipulation;
-}
-
-button:active {
-	transform: translateY(2px);
 }
 
 input #search-clear,
@@ -235,7 +297,7 @@ input::-webkit-calendar-picker-indicator {
 	display: none !important;
 }
 
-/* Route ArtworkId */
+/* Route ArtworkId MARK: Details */
 
 details > summary {
 	list-style: none !important;
@@ -317,7 +379,7 @@ header figure > img {
 	object-fit: contain;
 	/* max-height: clamp(1rem, calc(100vh - 15rem), calc(100vh - 10rem)) !important; */
 	max-width: clamp(283px, calc(100% - 2rem), min(843px, 100%)) !important;
-	border-radius: 1.5% !important;
+	border-radius: 1% !important;
 	transition: opacity 300ms ease-out;
 }
 
@@ -367,7 +429,7 @@ details li {
 	}
 
 	a {
-		color: #c5d8ff;
+		color: hsl(220, 100%, 89%);
 	}
 
 	strong {
@@ -375,28 +437,22 @@ details li {
 	}
 }
 
-/* splibutton divider */
-.search-bar form > button {
-	/* border-right: solid 1px #fffcd677; */
-	/* border-radius: 0; */
-}
 
-div.search-bar svg {
-	opacity: 0.75;
-}
 
 .splitbutton {
-	background-color: #7080901d;
-	border: 0.5px solid #90a5b9;
-	border-top-left-radius: 0;
+	button {
+		justify-content: flex-start;
+	}
+	/* border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
-	background-image: radial-gradient(circle at 150% 180%, #90a5b9, #0000 5%);
+	border-left: solid 0.5px #fefce880;
+	box-shadow: 0px 0px 0px 0.5px #fefce825; */
 
 	& > svg {
 		opacity: 0.85;
 	}
-	> span {
-		white-space: normal;
+	span {
+		white-space: normal;Terminal: Clear
 	}
 }
 
@@ -467,74 +523,76 @@ details[open] > #expander {
 }
 
 /*+ Get the width & height of an element   ________   ‾_🡙_‾  ________  | 🡘 |
+MARK: Get ‾_🡙_‾    | 🡘 |
 */
 
-
 @property --_x {
-  syntax: "<number>";
-  inherits: true;
-  initial-value: 0;
+	syntax: '<number>';
+	inherits: true;
+	initial-value: 0;
 }
 @property --_y {
-  syntax: "<number>";
-  inherits: true;
-  initial-value: 0;
+	syntax: '<number>';
+	inherits: true;
+	initial-value: 0;
 }
 @property --w {
-  syntax: "<integer>";
-  inherits: true;
-  initial-value: 0;
+	syntax: '<integer>';
+	inherits: true;
+	initial-value: 0;
 }
 @property --h {
-  syntax: "<integer>";
-  inherits: true;
-  initial-value: 0;
+	syntax: '<integer>';
+	inherits: true;
+	initial-value: 0;
 }
 
 .size {
-  overflow: auto;
-  position: relative;
-  --w:calc(1/(1 - var(--_x)));
-  --h:calc(1/(1 - var(--_y)));
-  timeline-scope: --cx,--cy;
-  animation: x linear,y linear;
-  animation-timeline: --cx,--cy;
-  animation-range: entry 100% exit 100%;
+	overflow: auto;
+	position: relative;
+	--w: calc(1 / (1 - var(--_x)));
+	--h: calc(1 / (1 - var(--_y)));
+	timeline-scope: --cx, --cy;
+	animation:
+		x linear,
+		y linear;
+	animation-timeline: --cx, --cy;
+	animation-range: entry 100% exit 100%;
 }
 .size:before {
-  content:"";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 1px;
-  aspect-ratio: 1;
-  view-timeline: --cx inline,--cy block;
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 1px;
+	aspect-ratio: 1;
+	view-timeline:
+		--cx inline,
+		--cy block;
 }
-@keyframes x {to{--_x:1}}
-@keyframes y {to{--_y:1}}
+@keyframes x {
+	to {
+		--_x: 1;
+	}
+}
+@keyframes y {
+	to {
+		--_y: 1;
+	}
+}
 
 .size:after {
-  content: counter(w) "x" counter(h);
-  counter-reset: w var(--w) h var(--h);
-  position: absolute;
-  left: 0;
-  top: 0;
-  background: #000;
-  color: #fff;
-  font-size: 23px;
-  font-weight: bold;
-  padding: .3em;
+	content: counter(w) 'x' counter(h);
+	counter-reset: w var(--w) h var(--h);
+	position: absolute;
+	left: 0;
+	top: 0;
+	background: #000;
+	color: #fff;
+	font-size: 23px;
+	font-weight: bold;
+	padding: 0.3em;
 }
-
-
-
-
-
-
-
-
-
-
 
 /*+ arrow with clip-path */
 .arrow-left {
@@ -817,56 +875,12 @@ body > div > header > form > button > svg .path {
 	}
 }
 
-/* Halftone */
 
-div.image-wrapper {
-	/* width: 562px;
-	height: 556px; */
-	background: var(--lyr0, var(--img)) var(--sep,) var(--lyr1,);
-	--dots: radial-gradient(circle, #000, #fff) 0 0 /6px 6px space;
-}
-
-/* .filter-wrapper .image-wrapper {
-	--img: url(https://www.artic.edu/iiif/2/fe1abb4b-e087-7d3c-2203-55c743b1d250/full/843,/0/default.jpg);
-	--lyr0: ;
-	--lyr1: radial-gradient(circle, #000, #fff) 0 0/6px 6px space;
-	position: relative;
-	overflow: hidden;
-	filter: contrast(19);
-} */
-
-.filter-wrapper .image-wrapper::after {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	background: var(--img);
-	background-size: max-w-[calc(100%-2rem)] auto;
-	filter: blur(3px) brightness(1.15) grayscale(1);
-	mix-blend-mode: screen;
-	content: '';
-}
-
-main > figure > div > div > img {
-	display: block !important;
-	box-shadow:
-		0px 0px 0px 0.5px #fff,
-		0px 0px 1px 1px #fff,
-		2px 4px 2px 0 oklch(from hsl(205 3% 40%) 0.25 c h / 1),
-		4px 8px 22px 0 oklch(from hsl(205 3% 40%) 0.15 c h / 1);
-	/* width: 562px;
-	height: 556px; */
-	max-width: fit-content !important;
-	max-height: fit-content !important;
-	object-fit: contain;
-	opacity: 0.3;
-}
 
 /* route artworks.index ................................ */
 /* radio buttons - grid selection */
 
-body:has(label:nth-child(1) > input[type='radio']:checked) {
+/* body:has(label:nth-child(1) > input[type='radio']:checked) {
 	> main > ul {
 		grid-template-columns: 1fr;
 	}
@@ -906,7 +920,7 @@ form > div {
 			grid-template-columns: 1fr 1fr 1fr;
 		}
 	}
-}
+} */
 
 input[type='radio']:checked + svg {
 	color: #fffcd6;
@@ -914,48 +928,6 @@ input[type='radio']:checked + svg {
 
 :checked svg {
 	color: #fffcd622;
-}
-
-figure {
-	font-size: clamp(13px, 10px + 3cqw, 20px);
-	img {
-		border-radius: 3cqmin !important;
-	}
-	svg {
-		margin-inline: auto;
-	}
-
-	figcaption {
-		padding-bottom: 3cqb;
-	}
-}
-
-/* figcaption container query ............................  */
-
-@container list-item (min-width: 170px) {
-	figcaption {
-		padding-bottom: 5cqb;
-	}
-	div.w-full.pt-2 {
-		width: auto;
-		padding-top: 0.25rem;
-	}
-	svg {
-		margin-inline: 0;
-	}
-}
-
-@container list-item (min-width: 300px) {
-	figcaption {
-		padding-bottom: 5cqb;
-	}
-	div.w-full.pt-2 {
-		width: auto;
-		padding-top: 0.25rem;
-	}
-	svg {
-		margin-inline: 0;
-	}
 }
 
 /* animated gradients with custom properties */
@@ -1025,8 +997,7 @@ animation:
   -webkit-text-stroke: 1px white;
 } */
 
-
-
+/*!                                                      viewport width
 @property --_w {
   syntax: '<length>';
   inherits: true;
@@ -1038,9 +1009,9 @@ animation:
   initial-value: 100vh;
 }
 :root {
-  --w: tan(atan2(var(--_w),1px)); /* screen width */
-  --h: tan(atan2(var(--_h),1px)); /* screen height*/
-  /* The result is an integer without unit  */
+  --w: tan(atan2(var(--_w),1px)); /* screen width */ /*
+  --h: tan(atan2(var(--_h),1px)); /* screen height*/ /*
+  /* The result is an integer without unit  */ /*
 }
 
 body:has(.openseadragon-container):before {
@@ -1057,4 +1028,122 @@ body:has(.openseadragon-container):before {
   span {
     content: "";
   }
+} */
+
+/*  */
+.gradient-border {
+	border: 5px solid #0000;
+	border-radius: 25px;
+	background:
+		conic-gradient(#fff /* the background color */ 0 0) padding-box,
+		linear-gradient(#ff4e50, #40c0cb) border-box;
 }
+
+/*!     `Comment Highlighting`: false */
+/*?     `Comment Highlighting`: false */
+/*§     `Comment Highlighting`: false */
+/*§§    `Comment Highlighting`: false */
+/*$     `Comment Highlighting`: false */
+/*%     `Comment Highlighting`: false */
+/*+     `Comment Highlighting`: false */
+/*⭐️    `Comment Highlighting`: false */
+/*      `Comment Highlighting`: false */
+/*_     `Comment Highlighting`: false */
+/*__    `Comment Highlighting`: false */
+/*___   `Comment Highlighting`: false */
+/*todo  `Comment Highlighting`: false */
+/*fixme `Comment Highlighting`: false */
+
+/*+   ....................................   Cross Shape    */
+/* HTML: <div class="cross"></div> */
+.cross {
+	--c: #e2f0f4;
+
+	height: 120px;
+	aspect-ratio: 1;
+	box-shadow: 0 0 0 35px inset var(--c);
+	border-image: conic-gradient(var(--c) 0 0) 50% / calc(50% - 5px);
+	clip-path: circle(); /* remove this if you don't want a rounded shape */
+	rotate: 45deg;
+}
+
+/*+  https://css-pattern.com/3d-wavy/  */
+
+/* html {
+  --s: 300px; /* control the size*/ /*
+  --c1: #f8b195;
+  --c2: #355c7d;
+
+  --_g:
+     var(--c2) 6%  14%,var(--c1) 16% 24%,var(--c2) 26% 34%,var(--c1) 36% 44%,
+     var(--c2) 46% 54%,var(--c1) 56% 64%,var(--c2) 66% 74%,var(--c1) 76% 84%,var(--c2) 86% 94%;
+  background:
+    radial-gradient(100% 100% at 100% 0,var(--c1) 4%,var(--_g),#0008 96%,#0000),
+    radial-gradient(100% 100% at 0 100%,#0000, #0008 4%,var(--_g),var(--c1) 96%)
+    var(--c1);
+  background-size: var(--s) var(--s);
+} */
+
+/*+  Folded Zig-Zag pattern  */
+
+/* html {
+  --s: 84px; /* control the size*/ /*
+  --c1: #ffffff;
+  --c2: #71e9a0;
+  --c3: #2a6a9b;
+
+  --a:from -30deg at;
+  background:
+    linear-gradient(#0000 50%,#0004 0),
+    conic-gradient(var(--a) 90%,var(--c1) 240deg,#0000     0),
+    conic-gradient(var(--a) 75%,var(--c2) 240deg,#0000     0),
+    conic-gradient(var(--a) 25%,#0000     240deg,var(--c1) 0),
+    conic-gradient(var(--a) 40%,var(--c1) 240deg,var(--c3) 0);
+  background-size: calc(1.5*var(--s)) var(--s);
+} */
+
+/*+  ................................................... gradient shadow   */
+
+/*
+conic-gradient(from 90deg at 40% -25%, #ffd700, #f79d03, #ee6907, #e6390a, #de0d0d, #d61039, #cf1261, #c71585, #cf1261, #d61039, #de0d0d, #ee6907, #f79d03, #ffd700, #ffd700, #ffd700)
+
+img {
+	-webkit-mask: linear-gradient(135deg, #000c 40%, #000, #000c 60%) 100% 100%/250%
+		250%;
+}
+img:hover {
+	-webkit-mask-position: 0 0;
+}
+*/
+
+/*+     ........................     animated gradient  */
+
+.anim-gradient {
+	/* background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); */
+	animation: gradient 15s ease infinite;
+	background-size: 400% 400%;
+	height: 100vh;
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 0%;
+	}
+	25% {
+		background-position: 50% 50%;
+	}
+	50% {
+		background-position: 100% 100%;
+	}
+	75% {
+		background-position: 50% 50%;
+	}
+	100% {
+		background-position: 0% 0%;
+	}
+}
+
+/* https://github.com/argyleink/conic.css */
+/* div {
+  background: conic-gradient(from -90deg at top left, #0001, #fff1)
+} */

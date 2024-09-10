@@ -110,7 +110,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 }
 // #endregion imports, links, meta
 
-//§   ...........................   MARK: Loader
+//   ...........................   MARK: Loader
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const timings = makeTimings('root loader')
@@ -224,7 +224,7 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
 	return headers
 }
 
-//§   ...........................   MARK: Document
+//   ...........................   MARK: Document
 
 function Document({
 	children,
@@ -251,7 +251,7 @@ function Document({
 				)}
 				<Links />
 			</head>
-			<body className="group/body bg-background text-foreground">
+			<body className="group/body min-h-[100dvh] bg-background text-foreground">
 				{children}
 				<script
 					nonce={nonce}
@@ -272,7 +272,7 @@ function Document({
  * @return {React.ReactNode} The main React component for the entire application.
  */
 
-//§   ...........................   MARK: App
+//   ...........................   MARK: App
 
 function App(): React.ReactNode {
 	const data = useLoaderData<typeof loader>()
@@ -292,166 +292,100 @@ function App(): React.ReactNode {
 		'all' | 'artist' | 'style' | 'place' | 'date' | 'color' | 'type' | ''
 	>('')
 
-	//§   ...............................................   MARK: return  ⮐
+	//   ......................................   MARK: return  ⮐
 
 	return (
 		<Document nonce={nonce} allowIndexing={allowIndexing} env={data.ENV}>
 			{location.pathname === '/' ? (
 				<>
-					<div className="m-auto flex h-full w-fit flex-col items-center justify-between px-0">
-						<header className="hd container mx-auto max-w-[843px] py-4 md:py-5">
-							<nav className="mx-auto flex flex-wrap items-center justify-between gap-4 md:flex-nowrap md:gap-8">
-								<Logo />
-
+					<div className="grid-container m-auto h-full">
+						<Logo />
+						{/*
+            //   ...................................   MARK: User 龜
+            */}
+						<div className="user col-[4_/_5] flex gap-10 place-self-center pr-0">
+							{user ? (
+								<UserDropdown />
+							) : (
+								<Button asChild variant="default" size="lg">
+									<Link to="/login">Log In</Link>
+								</Button>
+							)}
+						</div>
+						{/*
+            //   .....................   MARK: SearchBar large 🔎
+            */}
+						<div className="search-bar lg:w-4xl w-[calc(100vw - 2rem)] col-[2_/_5] row-[2_/_3] mx-auto w-full rounded-md bg-opacity-90 ring-0 ring-yellow-100/25 ring-offset-[.5px] ring-offset-yellow-50/25 md:max-w-xl">
+							<Form
+								method="GET"
+								action="/artworks"
+								className="no-wrap flex items-center justify-start gap-0"
+								/* onChange={(e) => handleFormChange(e.currentTarget)} */
+							>
 								{/*
-                   //§   .......................................   MARK: SearchBar SM🔎
+                //  ..............................   MARK: SearchInput
                 */}
 
-								<div className="search-bar mx-auto hidden max-w-sm flex-1 rounded-md bg-opacity-90 ring-0 ring-yellow-100/50 ring-offset-[.5px] ring-offset-yellow-50/50 sm:block lg:max-w-4xl xl:max-w-5xl">
-									<Form
-										method="GET"
-										action="/artworks"
-										className="no-wrap flex items-center justify-center gap-0"
-										/* onChange={(e) => handleFormChange(e.currentTarget)} */
-									>
-										{/*
-                       //§                                             MARK: SearchInput ⌨️
-                       //§ ............... https://www.jacobparis.com/ui/combobox-multiple
-                    */}
-
-										{/*
-                    To explicitly associate a <label> element with an <input> element, you first need to add the id attribute to the <input> element. Next, you add the for attribute to the <label> element, where the value of for is the same as the id in the <input> element.
-
-                    Alternatively, you can nest the <input> directly inside the <label>, in which case the for and id attributes are not needed because the association is implicit:
-                    */}
-
-										<div className="flex-1 rounded-md">
-											<Label htmlFor={id} className="sr-only">
-												Search
-											</Label>
-											<Input
-												id={id}
-												type="search"
-												name="search"
-												defaultValue={searchParams.get('search') ?? ''}
-												placeholder={`Search ${searchType}`}
-												className="w-full border-0"
-												onChange={(e) => setsearchParams(e.target.value)}
-											/>
-										</div>
-										{/* //§   ..............................   MARK: Status Button  🔄
-										 */}
-
-										<StatusButton
-											type="submit"
-											status={isPending ? 'pending' : 'idle'}
-											className="flex max-w-12 flex-1 items-center justify-center border-0 px-2 shadow-none"
-										>
-											<Icon name="magnifying-glass" size="lg" />
-											<span className="sr-only">Search</span>
-										</StatusButton>
-										{/* //§   ...........................   MARK: Split Button 🔽
-										 */}
-										<div className="splitbutton flex rounded-md border-0 px-2 shadow-gray-50">
-											<SelectSearchType
-												searchType={searchType}
-												setSearchType={setSearchType}
-											/>
-										</div>
-									</Form>
+								<div className="flex-1 rounded-md">
+									<Label htmlFor={id} className="sr-only">
+										Search
+									</Label>
+									<Input
+										id={id}
+										type="search"
+										name="search"
+										defaultValue={searchParams.get('search') ?? ''}
+										placeholder={`Search ${searchType}`}
+										className="h-9 w-full border-0"
+										onChange={(e) => setsearchParams(e.target.value)}
+									/>
 								</div>
+								{/* //   ...........................   MARK: Status Button  🔄
+								 */}
 
-								{/*
-                   //§   ..........................................   MARK: User 龜
-                */}
-
-								<div className="flex items-center gap-10 pr-0">
-									{user ? (
-										<UserDropdown />
-									) : (
-										<Button asChild variant="default" size="lg">
-											<Link to="/login">Log In</Link>
-										</Button>
-									)}
+								<StatusButton
+									type="submit"
+									status={isPending ? 'pending' : 'idle'}
+									className="flex h-9 max-w-12 flex-1 items-center justify-start border-0 px-2 shadow-none"
+								>
+									<Icon name="magnifying-glass" size="lg" />
+									<span className="sr-only">Search</span>
+								</StatusButton>
+								{/* //   ...........................   MARK: Split Button 🔽
+								 */}
+								<div className="splitbutton flex h-9 w-24 justify-start rounded-md">
+									<SelectSearchType
+										searchType={searchType}
+										setSearchType={setSearchType}
+									/>
 								</div>
+							</Form>
+						</div>
 
-								{/*
-                   //§   .......................................   MARK: Search Bar 🔎
-                */}
-
-								<div className="search-bar block w-full rounded-md ring-0 ring-yellow-100/25 ring-offset-[.5px] ring-offset-yellow-50/25 sm:hidden">
-									<Form
-										method="GET"
-										action="/artworks"
-										className="no-wrap flex items-center justify-center gap-2"
-										/* onChange={(e) => handleFormChange(e.currentTarget)} */
-									>
-										{/*
-                    // https://www.jacobparis.com/ui/combobox-multiple
-										To explicitly associate a <label> element with an <input> element, you first need to add the id attribute to the <input> element. Next, you add the for attribute to the <label> element, where the value of for is the same as the id in the <input> element.
-                    Alternatively, you can nest the <input> directly inside the <label>, in which case the for and id attributes are not needed because the association is implicit:
-                    //§    ................................................ MARK: SearchInput  ⌨️
-                    */}
-
-										<div className="flex-1 rounded-md">
-											<Label htmlFor={id} className="sr-only">
-												Search
-											</Label>
-											<Input
-												id={id}
-												type="search"
-												name="search"
-												defaultValue={searchParams.get('search') ?? ''}
-												placeholder={`Search ${searchType}`}
-												className="w-full border-0"
-												style={{
-													border: '5px solid #0000',
-													borderRadius: '25px',
-													background: `conicGradient(#fff  0 0) padding-box, linearGradient(#FF4E50,#40C0CB) border-box`,
-												}}
-												onChange={(e) => setsearchParams(e.target.value)}
-											/>
-										</div>
-
-										{/* //§   .....................................   MARK: Status Button 🔄
-										 */}
-
-										<StatusButton
-											type="submit"
-											status={isPending ? 'pending' : 'idle'}
-											className="flex h-6 w-6 items-center justify-center border-0 px-2 shadow-none"
-										>
-											<Icon name="magnifying-glass" size="lg" />
-											<span className="sr-only">Search</span>
-										</StatusButton>
-
-										{/* //§   ......................................   MARK: Split Button 🔽
-										 */}
-
-										<div className="splitbutton flex w-10 rounded-md border-l-emerald-100 shadow-gray-50">
-											<SelectSearchType
-												searchType={searchType}
-												setSearchType={setSearchType}
-											/>
-										</div>
-									</Form>
-								</div>
-							</nav>
-						</header>
-
-						<figure className="inline-flex !max-h-[clamp(1rem,calc(100dvh-10rem),calc(100dvh-10rem))] flex-col items-center pt-2">
+						{/*
+              //   ......................................   MARK: Figure 🖼️
+              */}
+						<figure
+							className="col-[2_/_-2] row-[3_/_-2] flex !max-h-full flex-col items-center pt-2"
+							style={{
+								containerType: 'inline-size',
+								containerName: 'figure',
+							}}
+						>
 							<img
-								className="animate-hue max-h-[calc(100dvh-18rem)] max-w-[calc(100vw-2rem)] rounded-sm object-contain sm:max-w-[clamp(283px,calc(100%-2rem),min(843px,100%))]"
+								className="animate-hue max-h-[calc(100dvh-18rem)] max-w-[calc(100vw_-_2rem)] rounded-sm object-contain sm:max-w-[clamp(283px,calc(100vw-2rem),min(843px,100%))]"
 								alt="A work made of acrylic and silkscreen ink on linen."
-								src="four-mona-lisas.jpg"
+								src="four-mona-lisas.avif"
 								data-rdt-source="/Volumes/Samsung/_Projects-on-Samsung/Remix/artepic/app/routes/_artworks+/artworks.$artworkId.tsx:::247"
 							/>
 							<figcaption className="relative pt-8 text-lg opacity-85">
 								Four Mona Lisas, 1978
 							</figcaption>
-						</figure>
-
-						<div className="footer flex h-12 w-full items-center justify-between p-4">
+						</figure>{' '}
+						{/*
+         //   ........................................   MARK: Footer  ┗━┛
+      */}
+						<div className="footer col-[2_/_-2] row-[4_/_5] flex h-12 w-full max-w-[843px+4rem] items-center justify-between px-4 pb-6">
 							<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
 							<Help />
 						</div>
@@ -461,9 +395,6 @@ function App(): React.ReactNode {
 
 			<Outlet />
 
-			{/*
-         //§   ..........................................   MARK: Footer  ┗━┛
-      */}
 			{/* <div className="footer container flex items-center justify-between py-3">
 				<Logo />
 				<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
@@ -496,7 +427,7 @@ export default withSentry(AppWithProviders)
 
 {
 	/*
-    //§   ..........................................   MARK: User Dropdown
+    //   ..........................................   MARK: User Dropdown
   */
 }
 
@@ -506,7 +437,10 @@ function UserDropdown() {
 	const formRef = useRef<HTMLFormElement>(null)
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
+			<DropdownMenuTrigger
+				asChild
+				className="border-amber-950 radix-state-open:border-2"
+			>
 				<Button asChild variant="secondary">
 					<Link
 						to={`/users/${user.username}`}
@@ -559,7 +493,7 @@ function UserDropdown() {
 	)
 }
 
-//§   ...........................   MARK: SelectSearchType
+//   ...........................   MARK: SelectSearchType
 
 interface SelectSearchTypeProps {
 	searchType:
@@ -579,7 +513,7 @@ interface SelectSearchTypeProps {
 }
 
 function SelectSearchType({
-	//searchType,
+	searchType,
 	setSearchType,
 }: SelectSearchTypeProps) {
 	const isPending = useIsPending({ formMethod: 'GET', formAction: '/artworks' })
@@ -587,7 +521,7 @@ function SelectSearchType({
 		<Select
 			name="searchType"
 			required={true}
-			value=""
+			value={searchType}
 			onValueChange={(value) => {
 				const searchType = value as
 					| 'all'
@@ -599,30 +533,25 @@ function SelectSearchType({
 					| 'color'
 
 				setSearchType(searchType)
-
-				if (searchType === 'color') {
-					window.location.href = '/artworks/colorSearch'
+				const searchForm =
+					document.querySelector<HTMLFormElement>('#search-form')
+				const searchInput =
+					document.querySelector<HTMLInputElement>('#search-input')
+				if (searchForm && searchInput) {
+					searchForm.action = `/artworks?searchType=${searchType}&search=${searchInput.value}`
+					searchForm.submit()
 				}
 			}}
 		>
-			<SelectTrigger className="w-10 p-2">
-				<SelectValue placeholder={/* searchType ? `${searchType}` : */ ''} />
+			<SelectTrigger className="h-9 w-24 justify-between border-0">
+				<SelectValue placeholder={searchType ? `${searchType}` : ''} />
 			</SelectTrigger>
 			<SelectContent>
-				<SelectItem value="all">
-					<StatusButton
-						type="submit"
-						status={isPending ? 'pending' : 'idle'}
-						className="flex h-6 w-6 items-center justify-center border-0 pl-4 pr-2 shadow-none"
-					>
-						All
-					</StatusButton>
-				</SelectItem>
 				<SelectItem value="artist">
 					<StatusButton
 						type="submit"
 						status={isPending ? 'pending' : 'idle'}
-						className="flex h-6 w-6 items-center justify-center border-0 pl-4 pr-2 shadow-none"
+						className="flex h-6 w-16 items-center border-0 pl-4 pr-2 text-left shadow-none"
 					>
 						Artist
 					</StatusButton>
@@ -631,7 +560,7 @@ function SelectSearchType({
 					<StatusButton
 						type="submit"
 						status={isPending ? 'pending' : 'idle'}
-						className="flex h-6 w-6 items-center justify-center border-0 pl-4 pr-2 shadow-none"
+						className="w-16text-left flex h-6 items-center justify-start border-0 pl-4 pr-2 shadow-none"
 					>
 						Style
 					</StatusButton>
@@ -640,7 +569,7 @@ function SelectSearchType({
 					<StatusButton
 						type="submit"
 						status={isPending ? 'pending' : 'idle'}
-						className="flex h-6 w-6 items-center justify-center border-0 pl-4 pr-2 shadow-none"
+						className="w-16text-left flex h-6 items-center justify-start border-0 pl-4 pr-2 shadow-none"
 					>
 						Place
 					</StatusButton>
@@ -649,7 +578,7 @@ function SelectSearchType({
 					<StatusButton
 						type="submit"
 						status={isPending ? 'pending' : 'idle'}
-						className="flex h-6 w-6 items-center justify-center border-0 pl-4 pr-2 shadow-none"
+						className="w-16text-left flex h-6 items-center justify-start border-0 pl-4 pr-2 shadow-none"
 					>
 						Date
 					</StatusButton>
@@ -658,7 +587,7 @@ function SelectSearchType({
 					<StatusButton
 						type="submit"
 						status={isPending ? 'pending' : 'idle'}
-						className="flex h-6 w-6 items-center justify-center border-0 pl-4 pr-2 shadow-none"
+						className="w-16text-left flex h-6 items-center justify-start border-0 pl-4 pr-2 shadow-none"
 					>
 						Type
 					</StatusButton>
@@ -667,9 +596,18 @@ function SelectSearchType({
 					<StatusButton
 						type="submit"
 						status={isPending ? 'pending' : 'idle'}
-						className="flex h-6 w-6 items-center justify-center border-0 pl-4 pr-2 shadow-none"
+						className="w-16text-left flex h-6 items-center justify-start border-0 pl-4 pr-2 shadow-none"
 					>
 						Color
+					</StatusButton>
+				</SelectItem>
+				<SelectItem value="all">
+					<StatusButton
+						type="submit"
+						status={isPending ? 'pending' : 'idle'}
+						className="w-16text-left flex h-6 items-center justify-start border-0 pl-4 pr-2 shadow-none"
+					>
+						All
 					</StatusButton>
 				</SelectItem>
 			</SelectContent>
@@ -677,25 +615,34 @@ function SelectSearchType({
 	)
 }
 
+//   ...........................   MARK: Logo
+
 function Logo() {
 	return (
-		<Link to="/" className="group grid px-2 leading-snug sm:px-6">
-			<span className="font-light leading-none text-cyan-200 transition group-hover:-translate-x-1">
+		<Link
+			to="/"
+			className="logo group col-[2_/_3] row-[1_/_2] grid place-self-center px-2 text-lg leading-tight sm:px-4"
+		>
+			<span className="font-bold leading-none text-cyan-200 transition group-hover:-translate-x-1">
 				kunst
 			</span>
-			<span className="font-bold leading-none text-yellow-100 transition group-hover:translate-x-1">
+			<span className="pl-1 font-light leading-none text-yellow-100 transition group-hover:translate-x-1">
 				räuber
 			</span>
 		</Link>
 	)
 }
 
-//§   ...........................   MARK: Help
+//   ...........................   MARK: Help
 
 function Help() {
 	return (
-		<Button variant="ghost" size="ghost" className="ml-auto">
-			<Icon name="question-mark-circled" className="border-0" size="md"></Icon>
+		<Button variant="ghost" size="ghost" className="ml-auto place-self-center">
+			<Icon
+				name="question-mark-circled"
+				className="border-0"
+				size="font"
+			></Icon>
 		</Button>
 	)
 }

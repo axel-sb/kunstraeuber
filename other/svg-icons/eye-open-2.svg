@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 15 15" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
+  <path fill="url(#SvgjsRadialGradient1001)" stroke="currentcolor" fill-rule="nonzero" d="M7.5 11.541c3.086 0 5.764 -1.975 7.097 -3.165 0.537 -0.48 0.537 -1.281 0 -1.76 -1.333 -1.19 -4.011 -3.165 -7.097 -3.165 -3.086 0 -5.764 1.975 -7.097 3.165 -0.537 0.48 -0.537 1.281 0 1.76 1.333 1.19 4.011 3.165 7.097 3.165Zm0 -1.223c1.559 0 2.822 -1.264 2.822 -2.822S9.059 4.673 7.5 4.673 4.678 5.937 4.678 7.495s1.264 2.822 2.822 2.822Z" clip-rule="evenodd" stroke-width="0.5" />
+  <defs>
+    <radialGradient id="SvgjsRadialGradient1001">
+      <stop stop-color="#000" offset="0" />
+      <stop stop-color="#currentColor" offset="1" />
+    </radialGradient>
+  </defs>
+</svg>

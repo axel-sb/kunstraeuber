@@ -1,5 +1,5 @@
 {
-	"include": ["**/*.ts", "**/*.tsx", "upsert.ts", "api-data_2024-07-30.d.ts"],
+	"include": ["**/*.ts", "**/*.tsx", "upsert.ts", "api-data_2024-07-30.d.ts", "hex-to-oklch.js"],
 	"exclude": ["**/_z.local.notes"],
 	"extends": ["@epic-web/config/typescript"],
 	"compilerOptions": {

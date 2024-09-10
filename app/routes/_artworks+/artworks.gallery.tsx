@@ -4,10 +4,16 @@ import {
 	type LoaderFunctionArgs,
 	json,
 } from '@remix-run/node'
-import { Link, NavLink, useLoaderData, useLocation } from '@remix-run/react'
+import {
+	Link,
+	// NavLink,
+	useLoaderData,
+	useLocation,
+	useMatches,
+} from '@remix-run/react'
 import chalk from 'chalk'
 import React from 'react'
-import SVGComponent from '#app/components/ui/eye.tsx'
+// import SVGComponent from '#app/components/ui/eye.tsx'
 import { Icon } from '#app/components/ui/icon.js'
 import {
 	getAny,
@@ -17,17 +23,19 @@ import {
 	getDate,
 	getColor,
 } from '../resources+/search-data.server'
+import gallery from './artworks.gallery.css?url'
 import artworks from './artworks.index.css?url'
+
 export const links: LinksFunction = () => [
 	{ rel: 'stylesheet', href: artworks },
+	{ rel: 'stylesheet', href: gallery },
 ]
 
 /* //§§   _________________________________ MARK: Loader
    This function is only ever run on the server. On the initial server render, it will provide data to the HTML document. On navigations in the browser, Remix will call the function via fetch from the browser.This means you can talk directly to your database, use server-only API secrets, etc. Any code that isn't used to render the UI will be removed from the browser bundle. */
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const url = new URL(request.url)
-	const query =
-		url.searchParams.get('search') ?? 'search query input is missing'
+	const query = url.searchParams.get('search') ?? 'search query input is missing'
 	const searchType =
 		url.searchParams.get('searchType') ?? 'search type is not yet selected'
 
@@ -78,8 +86,14 @@ export default function ArtworksPage() {
 			Object.entries(location).map(([k, v]) => `${chalk.red(k)}: ${v}  \n`),
 		),
 	)
+
+	const matches = useMatches()
+	const artworksFound = matches.find((match) => match.id === 'artworks')?.data
+
+	console.log('artworksFound', artworksFound)
+
 	//§  .............................  MARK: radio btns hook
-	const [grid, setgrid] = React.useState('')
+	const [grid, setgrid] = React.useState('grid-1')
 
 	const handleGrid1Change = () => {
 		setgrid('grid-1')
@@ -111,27 +125,27 @@ export default function ArtworksPage() {
 				<Icon
 					name={name}
 					size="font"
-					className="text-slate-400 group-has-[input[type='radio']:checked]:inline-flex group-has-[input[type='radio']:checked]:animate-pulse group-has-[input[type='radio']:checked]:text-slate-100"
+					className="text-slate-600 group-has-[input[type='radio']:checked]:inline-flex group-has-[input[type='radio']:checked]:animate-pulse group-has-[input[type='radio']:checked]:text-slate-100"
 				/>
 			</label>
 		)
 	}
-
+	/* // !. _____________________________________________________________________  	MARK: return
+	 */
 	return (
 		<>
-			{/*
-           //§   ...........................................   MARK: Header
-        */}
+			{/* // !.			__________________________________________________________			MARK: header
+			 */}
 
-			<header className="mx-auto grid w-full max-w-[clamp(843px+4rem)] grid-cols-2 justify-between gap-4 rounded-bl-2xl rounded-br-2xl px-4 py-6">
+			<header className="container grid max-w-[843px] grid-cols-[1fr_1fr] grid-rows-1 justify-between gap-4 rounded-bl-2xl rounded-br-2xl py-6">
 				<Logo />
 
 				{/*
-           //§   ...........................................   MARK: 🔘 btns
+           //§   .................................................................   MARK: radio btn group
         */}
 
-				<form className="form align-self-center col-[2/3] w-fit justify-self-end">
-					<div className="group/radio grid grid-cols-3 place-items-center rounded border-[0.5px] border-solid border-slate-400/60 pb-1 pr-3 text-lg text-yellow-50/50 md:gap-4 md:text-xl">
+				<form className="form place-self-center">
+					<div className="group/radio grid grid-cols-3 place-items-center rounded border-[0.5px] border-solid border-slate-500/50 pb-1 pl-0 pr-3 pt-0 text-lg text-yellow-50/50 md:gap-4 md:text-xl">
 						<RadioButton
 							name="grid-1"
 							value={grid}
@@ -151,22 +165,25 @@ export default function ArtworksPage() {
 					</div>
 				</form>
 			</header>
-			{/*
-           //§   ............................................   MARK:👑 Main
-        */}
-			<main className="artworks-fade-in flex flex-col items-center justify-start px-4 pt-12 pb-8 sm:p-10 md:px-12 lg:px-16 xl:px-24 2xl:px-32">
-				{/*{' '}
-				<ul className="artworks-fade-in group grid w-screen max-w-screen-xl grid-flow-row-dense gap-2 group-has-[label:nth-child(1)>input[type='radio']:checked]/body:grid-cols-1 group-has-[label:nth-child(2)>input[type=radio]:checked]/body:grid-cols-2 group-has-[label:nth-child(3)>input[type=radio]:checked]/body:grid-cols-3 md:gap-24 xl:gap-48">
-					{' '}
-					*/}
 
-				{/* <ul className="w-full gap-x-[3%] [column-count:1] sm:[column-count:2] sm:[column-fill:balance] sm:[column-width:283px] md:[column-width:350px] lg:max-w-[70rem] lg:[column-count:3]"> */}
-				<ul className="w-full gap-x-[3%] [column-count:1] group-has-[label:nth-child(1)>input[type='radio']:checked]/body:[column-count:1] group-has-[label:nth-child(2)>input[type=radio]:checked]/body:[column-count:2] group-has-[label:nth-child(3)>input[type=radio]:checked]/body:[column-count:3] md:[column-count:2] lg:[column-count:3]">
+			{/*
+           //§   .................................................................   MARK: Main
+        */}
+
+			<main className="artworks-fade-in flex items-start justify-center px-4 py-16 sm:p-10 md:px-12 lg:px-16 xl:px-24 2xl:px-32">
+        
+				<section className="w-full gallery grid">
 					{data !== undefined && data.length > 0 ? (
 						data.map((artwork) => (
-							<li
+              <img
+											alt={artwork.alt_text ?? undefined}
+											key={artwork.id}
+											src={artwork.image_url ?? '../dummy.jpeg'}
+											className="hover-[gradient-border] rounded-md md:rounded-lg"
+										/>
+							/* <li
 								key={artwork.id}
-								className="flex max-h-fit items-center justify-center"
+								className="flex w-full max-h-fit items-center justify-center"
 								style={{
 									containerType: 'inline-size',
 									containerName: 'list-item',
@@ -178,52 +195,44 @@ export default function ArtworksPage() {
 									}
 									to={`./${artwork.id}`}
 								>
-									<figure className="relative mb-20 flex w-full break-inside-avoid flex-col items-center gap-2">
-										<img
-											alt={artwork.alt_text ?? undefined}
-											key={artwork.id}
-											src={artwork.image_url ?? '../dummy.jpeg'}
-											className="hover-[gradient-border] w-full max-w-[843px] rounded-md object-contain object-center md:rounded-lg"
-										/>
+									<figure className="relative flex w-full flex-col gap-2"> */
 
-										{/*
-                       //§   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .    MARK: Figcaption
-                  */}
-										<figcaption
-											className="absolute bottom-0 z-50 flex w-full flex-wrap justify-between rounded-md backdrop-blur-[5px] backdrop-brightness-[0.5] backdrop-sepia-[90%] backdrop-filter"
+
+										/*
+                  //§  ..............................................   MARK: Figcaption
+                  */
+										/* <figcaption
+											className="z-50 flex w-full flex-wrap justify-between whitespace-normal"
 											style={{
 												color: colorHsl,
 											}}
 										>
-											<div className="group-has-[input[type=radio]]:grid-cols-2]:justify-self-start relative flex w-full flex-wrap font-light tracking-[-0.020rem] text-[#f2ece2]">
-												<div className="w-full">
+											<div className="group-has-[input[type=radio]]:grid-cols-2]:justify-self-start relative flex w-full flex-wrap font-light tracking-[-0.020rem]">
+												<div className="">
 													{artwork.title} {'  '}
 												</div>
 												<div className="figcaption-artist w-[calc(100%-2rem)] font-medium leading-snug tracking-[-0.020rem] opacity-70">
 													{artwork.artist_title}
 												</div>
 												<span
-													className="ml-auto self-end overflow-hidden"
+													className="ml-auto self-end"
 													style={{
 														color: artwork.colorHsl as string,
 													}}
 												>
-													<SVGComponent className="h-[1lh] w-[1lh] sm:h-[.9lh] sm:w-[.9lh]" />
-													{/* h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 */}
+													<SVGComponent className="h-[1lh] w-[1lh]" />
+													{/* h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6
 												</span>
 											</div>
 										</figcaption>
 									</figure>
 								</NavLink>
-							</li>
+							</li> */
 						))
 					) : (
 						<div className="section-wrapper backgroundImage: 'url(avatars/sad-thief.png)', objectFit: 'contain', w-full">
 							<section
-								className="w-full p-6 font-semibold text-yellow-50"
-								style={{
-									columnSpan: 'all',
-								}}
+								className="p-6 font-semibold text-yellow-50"
 							>
 								<h2 className="mx-auto text-lg">
 									... couldn't find anything for <br />
@@ -250,9 +259,10 @@ export default function ArtworksPage() {
 							</section>
 						</div>
 					)}
-				</ul>
-				<Footer />
+				</section>
 			</main>
+
+			<Footer />
 		</>
 	)
 }
@@ -261,7 +271,7 @@ export default function ArtworksPage() {
 
 function Logo() {
 	return (
-		<Link to="/" className="group/logo col-[1/2] grid leading-snug">
+		<Link to="/" className="group/logo grid leading-snug">
 			<span className="font-light leading-none text-cyan-200 transition group-hover/logo:-translate-x-1">
 				kunst
 			</span>
@@ -277,13 +287,12 @@ function Footer() {
 	const searchType = useLoaderData<typeof loader>().searchType
 	const query = useLoaderData<typeof loader>().query
 	return (
-		<footer className="search-params flex w-full items-center justify-between gap-4 pt-10">
+		<footer className="search-params relative col-span-2 flex items-center justify-between gap-4 px-4 py-6">
 			<div className="text-center leading-none">
 				<span className="font-semibold opacity-50">search </span>
 				<span>
 					<em className="font-normal opacity-100">
-						{searchType}
-						{': '}
+						{searchType} <Icon name="arrow-right" />
 					</em>{' '}
 				</span>
 				{query || ' '}{' '}

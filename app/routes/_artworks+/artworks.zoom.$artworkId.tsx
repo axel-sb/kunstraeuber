@@ -40,8 +40,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 	return json({ identifier, colorHsl })
 }
 
-//! https://developer.mozilla.org/en-US/docs/Web/API/Document/exitFullscreen ⚪️
-
 export default function Zoom() {
 	const navigate = useNavigate()
 	const { identifier } = useLoaderData() as { identifier: string }
@@ -49,7 +47,7 @@ export default function Zoom() {
 	const colorStyle = { '--color': colorHsl } as React.CSSProperties
 	return (
 		<>
-			<div className="backdrop-brightness-200 absolute bottom-4 left-8 z-10 inline-flex h-9 w-9 rounded-full bg-white/70 text-black backdrop-saturate-200">
+			<div className="backdrop-brightness-200 absolute bottom-6 left-8 z-10 inline-flex h-9 w-9 rounded-full bg-white/70 text-black backdrop-saturate-200">
 				<Icon
 					name="x"
 					className="h-9 w-9"

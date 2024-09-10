@@ -1,0 +1,86 @@
+canvas#my-canvas {
+	width: 100vw;
+	height: 100vh;
+}
+
+.main-grid > * {
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+}
+
+header > form {
+  grid-column: -2 / -1!important;
+  grid-row: 1 / 2;
+}
+
+figure {
+	display: grid;
+	grid-template-columns:
+		var(--padding-inline) minmax(10px, min-content) minmax(10px, max-content)
+		minmax(10px, min-content) var(--padding-inline);
+	grid-template-rows: min-content 1fr;
+	justify-content: space-between;
+}
+
+figcaption {
+	display: grid;
+	grid-template-columns:
+		var(--padding-inline) minmax(10px, min-content) minmax(10px, max-content)
+		minmax(10px, max-content) var(--padding-inline);
+}
+
+/* .logo {
+	display: inline-grid;
+	grid-column: 2 / 3;
+	grid-row: 1;
+	justify-self: start;
+	padding: 1rem 0;
+	justify-content: end;
+}
+
+.title {
+	grid-column: 3 / 4;
+	grid-row: 1;
+	justify-self: center;
+	align-self: start;
+}
+
+.favorite {
+	grid-column: 4 / 5;
+	grid-row: 1;
+	justify-self: end;
+	padding: 1rem 0;
+} */
+
+html {
+	--base-gray: oklch(12.94% 0.02 159);
+
+	--gray-1: var(--base-gray);
+	--gray-2: oklch(from var(--base-gray) calc(l + 0.1) c h);
+	--gray-3: oklch(from var(--base-gray) calc(l + 0.2) c h);
+	--gray-4: oklch(from var(--base-gray) calc(l + 0.3) c h);
+	--gray-5: oklch(from var(--base-gray) calc(l + 0.4) c h);
+	--gray-6: oklch(from var(--base-gray) calc(l + 0.5) c h);
+	--gray-7: oklch(from var(--base-gray) calc(l + 0.6) c h);
+	--gray-8: oklch(from var(--base-gray) calc(l + 0.7) c h);
+}
+
+/* .corner-only {
+	--s: 50px; /* the size on the corner */ /*
+	--t: 5px; /* the thickness of the border */ /*
+	--g: 20px; /* the gap between the border and image */ /*
+	/* padding: calc(var(--g) + var(--t)); */ /*
+	outline: var(--t) solid #0000; /* the color here */ /*
+	outline-offset: calc(-1 * var(--t));
+	-webkit-mask:
+		conic-gradient(at var(--s) var(--s), #0000 75%, #000 0) 0 0 /
+			calc(100% - var(--s)) calc(100% - var(--s)),
+		linear-gradient(#000 0 0) content-box;
+	transition: 0.4s;
+	cursor: pointer;
+}
+
+div.corner-only:hover {
+	outline-offset: calc(var(--g) / -1);
+	outline-color: #ff0;
+} */
