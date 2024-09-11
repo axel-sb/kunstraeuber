@@ -123,7 +123,7 @@ export default function ArtworksPage() {
            //§   ...........................................   MARK: Header
         */}
 
-			<header className="mx-auto grid w-full max-w-[clamp(843px+4rem)] grid-cols-2 justify-between gap-4 rounded-bl-2xl rounded-br-2xl px-4 py-6">
+			<header className="mx-auto grid w-full max-w-[clamp(843px+4rem)] grid-cols-2 justify-between gap-4 rounded-bl-2xl rounded-br-2xl bg-black px-4 py-6">
 				<Logo />
 
 				{/*
@@ -154,19 +154,19 @@ export default function ArtworksPage() {
 			{/*
            //§   ............................................   MARK:👑 Main
         */}
-			<main className="artworks-fade-in flex flex-col items-center justify-start px-4 pt-12 pb-8 sm:p-10 md:px-12 lg:px-16 xl:px-24 2xl:px-32">
+			<main className="artworks-fade-in flex-col items-center justify-start px-4 pb-8 pt-12 sm:p-10 md:px-12 lg:px-16 xl:px-24 2xl:px-32">
 				{/*{' '}
 				<ul className="artworks-fade-in group grid w-screen max-w-screen-xl grid-flow-row-dense gap-2 group-has-[label:nth-child(1)>input[type='radio']:checked]/body:grid-cols-1 group-has-[label:nth-child(2)>input[type=radio]:checked]/body:grid-cols-2 group-has-[label:nth-child(3)>input[type=radio]:checked]/body:grid-cols-3 md:gap-24 xl:gap-48">
 					{' '}
 					*/}
 
-				{/* <ul className="w-full gap-x-[3%] [column-count:1] sm:[column-count:2] sm:[column-fill:balance] sm:[column-width:283px] md:[column-width:350px] lg:max-w-[70rem] lg:[column-count:3]"> */}
-				<ul className="w-full gap-x-[3%] [column-count:1] group-has-[label:nth-child(1)>input[type='radio']:checked]/body:[column-count:1] group-has-[label:nth-child(2)>input[type=radio]:checked]/body:[column-count:2] group-has-[label:nth-child(3)>input[type=radio]:checked]/body:[column-count:3] md:[column-count:2] lg:[column-count:3]">
+				{/* <ul className="w-screen gap-x-[3%] [column-count:1] sm:[column-count:2] sm:[column-fill:balance] sm:[column-width:283px] md:[column-width:350px] lg:max-w-[70rem] lg:[column-count:3]"> */}
+				<ul className="3xl:gap-x-[5%] w-full gap-x-[3%] [column-count:1] group-has-[label:nth-child(1)>input[type='radio']:checked]/body:[column-count:1] group-has-[label:nth-child(2)>input[type=radio]:checked]/body:[column-count:2] group-has-[label:nth-child(3)>input[type=radio]:checked]/body:[column-count:3] md:[column-count:2] lg:gap-x-12 lg:[column-count:4] xl:gap-x-[4%] xl:[column-count:5] 2xl:gap-x-20">
 					{data !== undefined && data.length > 0 ? (
 						data.map((artwork) => (
 							<li
 								key={artwork.id}
-								className="flex max-h-fit items-center justify-center"
+								className="flex w-full items-center justify-center"
 								style={{
 									containerType: 'inline-size',
 									containerName: 'list-item',
@@ -178,12 +178,12 @@ export default function ArtworksPage() {
 									}
 									to={`./${artwork.id}`}
 								>
-									<figure className="relative mb-20 flex w-full break-inside-avoid flex-col items-center gap-2">
+									<figure className="group-has-[input[type=radio]]:grid-cols-1]:mb-40 relative mb-8 flex break-inside-avoid flex-col items-center justify-between xl:mb-20">
 										<img
-											alt={artwork.alt_text ?? undefined}
-											key={artwork.id}
+                        alt={artwork.alt_text ?? undefined}
+                        key={artwork.id}
 											src={artwork.image_url ?? '../dummy.jpeg'}
-											className="hover-[gradient-border] w-full max-w-[843px] rounded-md object-contain object-center md:rounded-lg"
+											className="hover-[gradient-border] w-full max-w-full rounded-md object-contain object-center md:rounded-lg"
 										/>
 
 										{/*
@@ -265,7 +265,7 @@ function Logo() {
 			<span className="font-light leading-none text-cyan-200 transition group-hover/logo:-translate-x-1">
 				kunst
 			</span>
-			<span className="font-bold leading-none text-yellow-100 transition group-hover/logo:translate-x-1">
+			<span className="font-bold leading-none text-yellow-100 transition group-hover/logo:translate-x-1">f
 				räuber
 			</span>
 		</Link>
@@ -277,8 +277,8 @@ function Footer() {
 	const searchType = useLoaderData<typeof loader>().searchType
 	const query = useLoaderData<typeof loader>().query
 	return (
-		<footer className="search-params flex w-full items-center justify-between gap-4 pt-10">
-			<div className="text-center leading-none">
+		<footer className="search-params mt-4 flex w-[calc(100vw-1rem)] -translate-x-2 translate-y-2 items-center justify-between gap-4 rounded-lg bg-black px-2 py-4">
+			<div className="text-left leading-none">
 				<span className="font-semibold opacity-50">search </span>
 				<span>
 					<em className="font-normal opacity-100">

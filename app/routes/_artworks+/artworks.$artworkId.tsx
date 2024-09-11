@@ -129,7 +129,9 @@ export default function ArtworkId() {
 	const { artwork } = useLoaderData<typeof loader>()
 
 	const colorHsl = `${artwork.colorHsl}`
-	// console.log(colorHsl)
+	const colorH = parseInt(`${artwork.color_h}`)
+	const colorS = parseInt(`${artwork.color_s}`)
+	const colorL = parseInt(`${artwork.color_l}`)
 
 	/* const artist = {
 		__html:
@@ -159,7 +161,7 @@ export default function ArtworkId() {
 			<figure className="">
 				<div className="image-wrapper">
 					<img
-						className="mx-auto max-h-[80dvh] w-[calc(100vw-2rem)] max-w-[843px] rounded-md object-contain object-center"
+						className="mx-auto max-h-[80dvh] max-w-[clamp(281px,100%,calc(100vw-2rem))] rounded-md object-contain object-center"
 						alt={artwork.alt_text ?? undefined}
 						key={artwork.id}
 						src={artwork.image_url ?? '../../../four-mona-lisas-sm.jpg'}
@@ -234,7 +236,7 @@ export default function ArtworkId() {
 						</div>
 					</div>
 					{/*
-          // #region details //   .............................  MARK: Details
+          // #region details //   MARK: Details
           */}
 					{/* <details className="group flex h-full w-full flex-1 overflow-auto sm:max-w-[843px] lg:max-w-[calc(843px+8rem)]"> */}
 					{/*
@@ -359,13 +361,17 @@ export default function ArtworkId() {
 							</div>
 						</details> */}
 					{/*
-               // #endregion DETAILS
-            */}
+          // #endregion DETAILS .....
+          */}
 				</figcaption>
 			</figure>
 			{/* <footer className=""></footer> */}
-			<div className="canvas cols-[1_/_-1] absolute -z-10 hidden h-full w-full">
-				<MeshGradients />
+			<div className="canvas cols-[1_/_-1] absolute -z-10 h-full w-full">
+				{MeshGradients(
+					colorH,
+					colorS,
+					colorL
+					)}
 			</div>
 		</>
 	)

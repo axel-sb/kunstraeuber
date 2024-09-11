@@ -1,32 +1,51 @@
 :root {
-  --dots: radial-gradient(circle, #0000, #d3cec5);
+	--dots: radial-gradient(circle, #0000, #adaba6);
 }
 
 div.halftone {
-  width: 100vw;
-  height: 100vw;
-  margin: 1rem auto;
-  background: var(--lyr0, var(--img)) var(--sep,  ) var(--lyr1,  );
-  --dots: radial-gradient(circle, #0000, #d3cec5) 0 0 /px 10px space;
+	width: 100vw;
+	height: 100vw;
+	margin: 0;
+	background: var(--lyr0, var(--img)) var(--sep,) var(--lyr1,);
+	--dots: radial-gradient(circle, #0000, #adaba6) 0 0 / px 10px space;
 }
 
 .filter .halftone {
-  --img: url(https://www.artic.edu/iiif/2/fe1abb4b-e087-7d3c-2203-55c743b1d250/full/843,/0/default.jpg) 50%/cover;
-  --lyr0: ;
-  --lyr1: radial-gradient(circle, #00000096, #d3cec5) 0 0 / 10px 10px space;
-  position: relative;
-  overflow: hidden;
-  filter: contrast(19);
+	--img: url(https://www.artic.edu/iiif/2/fe1abb4b-e087-7d3c-2203-55c743b1d250/full/843,/0/default.jpg)
+		50% / cover;
+	--lyr0: ;
+	--lyr1: radial-gradient(circle, #00000096, #adaba6) 0 0 / 10px 10px space;
+	position: relative;
+	overflow: hidden;
+	filter: contrast(19);
 }
 
 .filter .halftone::after {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: var(--img);
-  filter: blur(3px) brightness(1.15) grayscale(1);
-  mix-blend-mode: screen;
-  content: "";
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: var(--img);
+	filter: blur(3px) brightness(1.05) grayscale(1);
+	mix-blend-mode: screen;
+	content: '';
+}
+
+body > ul {
+	> li:nth-child(1) {
+		color: #fff;
+    font-weight: bold;
+	}
+	> li:nth-child(2) {
+    font-weight: bold;
+  > span {
+		font-size: 1rem;
+    font-weight: medium;
+		color: #fff;
+	}}
+	> li > p {
+		opacity: 99%;
+    color: #e3dcd0;
+	}
 }

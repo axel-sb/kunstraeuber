@@ -57,16 +57,6 @@ h6 {
 	justify-content: space-between;
 }
 
-/* nav {
-	display: grid;
-	grid-template-columns: minmax(10px, min-content) minmax(10px, 1fr) minmax(
-			10px,
-			min-content
-		);
-	grid-template-rows: min-content;
-	justify-content: space-between;
-} */
-
 .logo {
 	display: inline-grid;
 	grid-column: 2 / 3;
@@ -84,13 +74,9 @@ h6 {
 }
 
 .search-bar {
-	grid-column: 2 / 5;
-	grid-row: 2;
 	justify-self: center;
-	align-self: start;
+	align-self: center;
 }
-
-
 
 footer {
 	position: sticky;

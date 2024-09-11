@@ -129,14 +129,14 @@ export default function ArtworkDetails() {
 
 	const artist = {
 		__html:
-			'<span class="font-medium opacity-60">Artist:  </span> <br>' +
+			'<span class="font-medium opacity-80">Artist:  </span> <br>' +
 			artwork.artist_display,
 	}
 
 	const description = {
 		__html:
 			artwork.description && artwork.description !== 'null'
-				? '<span class="font-medium opacity-60">Description: </span>' +
+				? '<span class="font-medium opacity-80">Description: </span>' +
 					artwork.description
 				: '',
 	}
@@ -150,49 +150,41 @@ export default function ArtworkDetails() {
 			</header>{' '}
 			*/}
 			{/* // ......................................  MARK: Halftone               */}
-			<aside className="filter opacity-30">
+			<aside className="absolute opacity-30 filter">
 				<div
 					className="halftone"
 					style={{ '--img': halftoneUrl } as React.CSSProperties}
 				></div>
 			</aside>
-			<img
-				src="https://www.artic.edu/iiif/2/9a9737e3-c296-a2b5-4d76-d88f50a61ff8/full/843,/0/default.jpg"
-				className="relative -z-10 -translate-y-[105%] opacity-100"
-			/>
 
 			<Button
-				className="btn-back relative z-10 ml-auto mr-4 flex h-12 w-12 translate-x-1 translate-y-8 cursor-pointer rounded-full text-yellow-50/50 active:opacity-50"
+				className="btn-back relative z-10 ml-auto p-0 mr-4 flex h-14 w-14 translate-x-1 cursor-pointer rounded-full text-yellow-50/50 active:opacity-50"
 				variant="ghost"
-				size="ghost"
 				onClick={() => {
 					navigate(-1)
 				}}
 			>
 				<Icon
 					name="cross-x"
-					size="xl"
-					className=""
+					className="w-12 h-12"
 					style={{ color: colorHsl, filter: 'saturate(0.5)' }}
 				/>
 			</Button>
-
 			{/* // ......................................  MARK: ul               */}
-
-			<ul className="flex h-full flex-col gap-2 px-4 leading-relaxed">
+			<ul className="flex h-full flex-col gap-2 px-4 py-8 leading-relaxed">
 				<li key="title">
-					<span className="list-item font-medium opacity-75">
+					<span className="list-item font-medium opacity-85">
 						Title
 						{': '}
 					</span>
-					<span className="detail-content inline-block text-lg">
+					<span className="detail-content inline-block pb-4 text-2xl opacity-[0.99]">
 						{artwork.title}
 					</span>
 				</li>
 
 				<li
 					dangerouslySetInnerHTML={artist}
-					className="hyphens-auto pb-4 text-lg"
+					className="hyphens-auto pb-4 text-2xl text-white opacity-[0.99]"
 				></li>
 
 				{Object.entries(artwork)
@@ -226,12 +218,14 @@ export default function ArtworkDetails() {
 					})
 					.map(([key, value]) => (
 						<li key={key} className="pb-6">
-							<span className="list-item font-medium opacity-60">{key}:</span>{' '}
-							<span className="detail-content inline-block">{value}</span>
+							<span className="list-item font-medium opacity-80">{key}:</span>{' '}
+							<span className="detail-content inline-block opacity-[0.99]">
+								{value}
+							</span>
 						</li>
 					))}
 				<li
-					className="max-w-prose pb-4 pt-4 leading-relaxed"
+					className="mt-[30vw] max-w-prose pb-4 pt-4 leading-relaxed text-foreground opacity-80"
 					dangerouslySetInnerHTML={description}
 				></li>
 				{Object.entries({
@@ -247,12 +241,14 @@ export default function ArtworkDetails() {
 					)
 					.map(([key, value]) => (
 						<li key={key}>
-							<span className="list-item font-medium opacity-60">
+							<span className="list-item font-medium opacity-80">
 								{key}
 								{': '}
 							</span>
 
-							<span className="detail-content inline-block pb-4">{value}</span>
+							<span className="detail-content inline-block pb-4 opacity-[0.99]">
+								{value}
+							</span>
 						</li>
 					))}
 			</ul>

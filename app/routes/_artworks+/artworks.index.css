@@ -6,7 +6,7 @@ body {
 
 /* radio-group */
 header > form > div {
-  background: conic-gradient(from -90deg at top left, #0001, #fff1)
+	background: conic-gradient(from -90deg at top left, #0001, #fff1);
 }
 
 canvas {
@@ -14,7 +14,7 @@ canvas {
 }
 
 html {
-  height: fit-content!important;
+	height: fit-content !important;
 }
 
 header,
@@ -81,14 +81,17 @@ main {
 		padding-top: 0.25rem;
 	}
 	svg {
-		width: .7lh;
-    height: .7lh
+		width: 0.7lh;
+		height: 0.7lh;
 	}
 }
 
 @container list-item (min-width: 300px) {
+	figure {
+		margin-bottom: 10rem!important;
+	}
 	li {
-		padding-bottom: 7cqb;
+		padding-bottom: 25cqb;
 		padding-inline: 3cqi;
 	}
 	div.w-full.pt-2 {
@@ -97,6 +100,6 @@ main {
 	}
 	svg {
 		width: 1lh;
-    height: 1lh;
+		height: 1lh;
 	}
 }

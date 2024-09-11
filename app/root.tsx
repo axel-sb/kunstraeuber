@@ -315,7 +315,7 @@ function App(): React.ReactNode {
 						{/*
             //   .....................   MARK: SearchBar large 🔎
             */}
-						<div className="search-bar lg:w-4xl w-[calc(100vw - 2rem)] col-[2_/_5] row-[2_/_3] mx-auto w-full rounded-md bg-opacity-90 ring-0 ring-yellow-100/25 ring-offset-[.5px] ring-offset-yellow-50/25 md:max-w-xl">
+						<div className="search-bar w-[calc(100vw - 2rem)] col-[2_/_5] row-[2_/_3] mx-auto w-full rounded-md bg-opacity-90 ring-0 ring-yellow-100/25 ring-offset-[.5px] ring-offset-yellow-50/25 lg:row-[1_/_2] lg:col-[3_/_4]">
 							<Form
 								method="GET"
 								action="/artworks"
@@ -361,7 +361,6 @@ function App(): React.ReactNode {
 								</div>
 							</Form>
 						</div>
-
 						{/*
               //   ......................................   MARK: Figure 🖼️
               */}
