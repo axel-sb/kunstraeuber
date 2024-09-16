@@ -18,16 +18,19 @@ import {
 } from '@remix-run/react'
 import chalk from 'chalk'
 import { type FunctionComponent } from 'react'
-import MeshGradients from '#app/components/mesh-gradients.tsx'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.js'
+import kunstraeuber from '../../../avatars/kunstraeuber.png'
+// import circles from '../../../circles.svg'
 import { getArtwork, updateArtwork } from '../resources+/search-data.server.tsx'
 import detailsStyles from './artworks.details.artworkId.css?url'
 
 // import { useNonce } from '#app//utils/nonce-provider.ts'
 // #endregion imports
 
-export const links: LinksFunction = () => [{ rel: 'stylesheet', href: detailsStyles }]
+export const links: LinksFunction = () => [
+	{ rel: 'stylesheet', href: detailsStyles },
+]
 
 export const meta: MetaFunction<typeof loader> = () => {
 	return [
@@ -47,7 +50,7 @@ export const action = async ({ params }: ActionFunctionArgs) => {
 	return redirect(`./`)
 }
 
-//    .................................................    MARK: Loader
+//    ................................    MARK: Loader
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
 	invariantResponse(params.artworkId, 'Missing artworkId param')
@@ -82,7 +85,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 	return json({ artwork: filteredArtwork })
 }
 
-//    ...............................................   MARK: Favorite
+//    ...........................   MARK: FAVORITE
 
 const Favorite: FunctionComponent<{
 	artwork: Pick<Artwork, 'favorite'>
@@ -104,10 +107,10 @@ const Favorite: FunctionComponent<{
 				name="favorite"
 				variant="ghost"
 				size="ghost"
-				className="inline-flex w-8 px-0 pt-2 mt-4"
+				className="inline-flex w-8 px-0 pt-2"
 				style={{
 					color: colorHsl as unknown as string,
-					filter: 'brightness(1.75)',
+					filter: '',
 					strokeDasharray: 50,
 				}}
 			>
@@ -123,70 +126,85 @@ const Favorite: FunctionComponent<{
 
 export default function ArtworkDetails() {
 	const { artwork } = useLoaderData<typeof loader>()
-	const colorHsl = `${artwork.colorHsl}`
-  const navigate = useNavigate()
-  const halftoneUrl = `url(${artwork.image_url}) 50% / cover` || 'none'
+	const navigate = useNavigate()
+	const halftoneUrl = `url(${artwork.image_url}) 50% / cover` || 'none'
+  const colorHsl = artwork.colorHsl
+  const colorHslIcon = `hsl(${artwork.color_h}, ${artwork.color_s}%, 50%)`
+  const colorHslGradientBg = `hsl(${artwork.color_h}, ${artwork.color_s}%, 25%)`
 
 	const artist = {
 		__html:
-			'<span class="font-medium opacity-80">Artist:  </span> <br>' +
+			'<div class="opacity-80 text-[1.1rem]">Artist:  </div> ' +
 			artwork.artist_display,
 	}
 
 	const description = {
 		__html:
 			artwork.description && artwork.description !== 'null'
-				? '<span class="font-medium opacity-80">Description: </span>' +
+				? '<div class="text-base opacity-80 pb-4">Description: </div>' +
 					artwork.description
 				: '',
 	}
 
+	{
+		/* //   MARK: RETURN .................................	 */
+	}
+
 	return (
-		<>
-			{/*{' '}
-			<header className="flex w-full justify-between p-4">
-				<Logo />
+		<div className="details-container mx-auto max-w-prose">
+			<header className="flex w-full items-center justify-between p-4">
+				{/* //.MARK: ⃝ btn-back ⏪	...................*/}
+
+				<Button
+					className="btn-back relative z-50 flex h-10 w-10 cursor-pointer rounded-full p-0 text-yellow-50/50 active:opacity-50"
+					variant="ghost"
+					onClick={() => {
+						navigate(-1)
+					}}
+				>
+					<Icon name="cross-1" className="h-6 w-6" />
+				</Button>
+
+				{/* //.MARK: ⭐️ FAVORITE ⏪	...................*/}
+
 				<Favorite artwork={artwork} />
-			</header>{' '}
-			*/}
-			{/* // ......................................  MARK: Halftone               */}
+			</header>
+
+			{/* // ........  MARK: ◐ HALFTONE  	.........................	 */}
+
 			<aside className="absolute opacity-30 filter">
 				<div
 					className="halftone"
-					style={{ '--img': halftoneUrl } as React.CSSProperties}
+					style={
+						{
+							'--img': halftoneUrl,
+							'--colorHsl': colorHslGradientBg,
+						} as React.CSSProperties
+					}
 				></div>
 			</aside>
 
-			<Button
-				className="btn-back relative z-10 ml-auto p-0 mr-4 flex h-14 w-14 translate-x-1 cursor-pointer rounded-full text-yellow-50/50 active:opacity-50"
-				variant="ghost"
-				onClick={() => {
-					navigate(-1)
-				}}
-			>
-				<Icon
-					name="cross-x"
-					className="w-12 h-12"
-					style={{ color: colorHsl, filter: 'saturate(0.5)' }}
-				/>
-			</Button>
-			{/* // ......................................  MARK: ul               */}
-			<ul className="flex h-full flex-col gap-2 px-4 py-8 leading-relaxed">
-				<li key="title">
-					<span className="list-item font-medium opacity-85">
+			{/* // .MARK: TITLE & ARTIST (details) ..................... */}
+
+			<div className="mx-auto flex h-full max-w-prose flex-col justify-end gap-2 px-4 pb-4 leading-relaxed">
+				<div className="title-artist-wrapper">
+					<div className="text-[1.1rem] text-lg opacity-80">
 						Title
 						{': '}
-					</span>
-					<span className="detail-content inline-block pb-4 text-2xl opacity-[0.99]">
+					</div>
+					<div className="inline-block pb-4 text-xl text-white opacity-[0.99]">
 						{artwork.title}
-					</span>
-				</li>
+					</div>
 
-				<li
-					dangerouslySetInnerHTML={artist}
-					className="hyphens-auto pb-4 text-2xl text-white opacity-[0.99]"
-				></li>
+					<div
+						dangerouslySetInnerHTML={artist}
+						className="hyphens-auto pb-4 text-xl text-white opacity-[0.99]"
+					></div>
+				</div>
+			</div>
 
+			{/* // .MARK:► UL (details) ..................... */}
+			<ul className="mx-auto flex max-w-prose flex-col gap-2 px-4 py-8 leading-relaxed">
 				{Object.entries(artwork)
 					.filter(
 						([key, value]) =>
@@ -218,14 +236,14 @@ export default function ArtworkDetails() {
 					})
 					.map(([key, value]) => (
 						<li key={key} className="pb-6">
-							<span className="list-item font-medium opacity-80">{key}:</span>{' '}
+							<span className="list-item opacity-80">{key}:</span>{' '}
 							<span className="detail-content inline-block opacity-[0.99]">
 								{value}
 							</span>
 						</li>
 					))}
 				<li
-					className="mt-[30vw] max-w-prose pb-4 pt-4 leading-relaxed text-foreground opacity-80"
+					className="max-w-prose pb-4 pt-4 leading-relaxed text-foreground opacity-80"
 					dangerouslySetInnerHTML={description}
 				></li>
 				{Object.entries({
@@ -241,7 +259,7 @@ export default function ArtworkDetails() {
 					)
 					.map(([key, value]) => (
 						<li key={key}>
-							<span className="list-item font-medium opacity-80">
+							<span className="list-item opacity-80">
 								{key}
 								{': '}
 							</span>
@@ -252,22 +270,40 @@ export default function ArtworkDetails() {
 						</li>
 					))}
 			</ul>
-		</>
+			<Logo />
+		</div>
 	)
 }
 
+{
+	/* // ........  MARK: LOGO  	.........................	 */
+}
+
 function Logo() {
+  const {
+		artwork: { colorHsl: colorHsl },
+	} = useLoaderData<typeof loader>()
+
 	return (
-		<Link to="/" className="logo group relative z-10 leading-snug">
-			<span
-				className="text-xl font-medium leading-none transition group-hover:-translate-x-1"
-				style={{ color: 'var(--gray-8)' }}
+		<>
+			<section className="absolute left-[0] w-1/3">
+				<div className="halftone-anim"></div>
+			</section>
+			<Link
+				to="/"
+				className="logo group relative z-10 w-full leading-snug pl-4"
+				style={{}}
 			>
-				kunst
-			</span>
-			<span className="text-xl font-light leading-none text-yellow-100 transition">
-				räuber
-			</span>
-		</Link>
+				<span
+					className="px-4 text-xl font-medium leading-none transition group-hover:-translate-x-1 inline-block"
+					style={{ color: 'var(--gray-8)' }}
+				>
+					kunst
+				</span>
+				<span className="px-4 text-xl font-light leading-none text-yellow-100 transition inline-block">
+					räuber
+				</span>
+			</Link>
+		</>
 	)
 }

@@ -298,12 +298,12 @@ function App(): React.ReactNode {
 		<Document nonce={nonce} allowIndexing={allowIndexing} env={data.ENV}>
 			{location.pathname === '/' ? (
 				<>
-					<div className="grid-container m-auto h-full">
+					<div className="grid-container m-auto h-full max-w-[calc(843px+8rem)]">
 						<Logo />
 						{/*
             //   ...................................   MARK: User 龜
             */}
-						<div className="user col-[4_/_5] flex gap-10 place-self-center pr-0">
+						<div className="user py1 col-[4_/_5] flex gap-10 place-self-center pr-0">
 							{user ? (
 								<UserDropdown />
 							) : (
@@ -313,9 +313,9 @@ function App(): React.ReactNode {
 							)}
 						</div>
 						{/*
-            //   .....................   MARK: SearchBar large 🔎
+            //   .....................   MARK: SearchBar  🔎
             */}
-						<div className="search-bar w-[calc(100vw - 2rem)] col-[2_/_5] row-[2_/_3] mx-auto w-full rounded-md bg-opacity-90 ring-0 ring-yellow-100/25 ring-offset-[.5px] ring-offset-yellow-50/25 lg:row-[1_/_2] lg:col-[3_/_4]">
+						<div className="search-bar w-[calc(100vw - 2rem)] col-[2_/_5] row-[3_/_4] m-4 mx-auto w-full rounded-md bg-opacity-90 py-1 ring-0 ring-yellow-100/25 ring-offset-[.5px] ring-offset-yellow-50/25 lg:col-[3_/_4] lg:row-[2_/_3] lg:m-0">
 							<Form
 								method="GET"
 								action="/artworks"
@@ -326,7 +326,7 @@ function App(): React.ReactNode {
                 //  ..............................   MARK: SearchInput
                 */}
 
-								<div className="flex-1 rounded-md">
+								<div className="max-h-6 flex-1 rounded-md">
 									<Label htmlFor={id} className="sr-only">
 										Search
 									</Label>
@@ -336,7 +336,7 @@ function App(): React.ReactNode {
 										name="search"
 										defaultValue={searchParams.get('search') ?? ''}
 										placeholder={`Search ${searchType}`}
-										className="h-9 w-full border-0"
+										className="search-cancel:-scale-150 h-6 w-full border-0 py-1 focus:ring-0"
 										onChange={(e) => setsearchParams(e.target.value)}
 									/>
 								</div>
@@ -346,14 +346,14 @@ function App(): React.ReactNode {
 								<StatusButton
 									type="submit"
 									status={isPending ? 'pending' : 'idle'}
-									className="flex h-9 max-w-12 flex-1 items-center justify-start border-0 px-2 shadow-none"
+									className="flex h-6 max-w-12 flex-1 items-center justify-start border-0 pb-3 shadow-none"
 								>
-									<Icon name="magnifying-glass" size="lg" />
+									<Icon name="magnifying-glass" size="md" />
 									<span className="sr-only">Search</span>
 								</StatusButton>
 								{/* //   ...........................   MARK: Split Button 🔽
 								 */}
-								<div className="splitbutton flex h-9 w-24 justify-start rounded-md">
+								<div className="splitbutton flex h-6 w-24 items-center justify-start rounded-md">
 									<SelectSearchType
 										searchType={searchType}
 										setSearchType={setSearchType}
@@ -365,14 +365,14 @@ function App(): React.ReactNode {
               //   ......................................   MARK: Figure 🖼️
               */}
 						<figure
-							className="col-[2_/_-2] row-[3_/_-2] flex !max-h-full flex-col items-center pt-2"
+							className="col-[2_/_-2] row-[4_/_-2] flex !max-h-full flex-col items-center lg:row-[4_/_-1]"
 							style={{
 								containerType: 'inline-size',
 								containerName: 'figure',
 							}}
 						>
 							<img
-								className="animate-hue max-h-[calc(100dvh-18rem)] max-w-[calc(100vw_-_2rem)] rounded-sm object-contain sm:max-w-[clamp(283px,calc(100vw-2rem),min(843px,100%))]"
+								className="animate-hue max-h-[calc(100dvh-10rem)] max-w-[calc(100vw_-_2rem)] rounded-sm object-contain sm:max-w-[clamp(283px,calc(100vw-2rem),min(843px,100%))]"
 								alt="A work made of acrylic and silkscreen ink on linen."
 								src="four-mona-lisas.avif"
 								data-rdt-source="/Volumes/Samsung/_Projects-on-Samsung/Remix/artepic/app/routes/_artworks+/artworks.$artworkId.tsx:::247"
@@ -384,7 +384,7 @@ function App(): React.ReactNode {
 						{/*
          //   ........................................   MARK: Footer  ┗━┛
       */}
-						<div className="footer col-[2_/_-2] row-[4_/_5] flex h-12 w-full max-w-[843px+4rem] items-center justify-between px-4 pb-6">
+						<div className="footer col-[2_/_-2] row-[5_/_6] flex h-12 w-full max-w-[843px+4rem] items-center justify-between px-4 pb-6">
 							<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
 							<Help />
 						</div>
@@ -438,17 +438,17 @@ function UserDropdown() {
 		<DropdownMenu>
 			<DropdownMenuTrigger
 				asChild
-				className="border-amber-950 radix-state-open:border-2"
+				className="border-amber-950 radix-state-open:border-2 py-1 h-8"
 			>
 				<Button asChild variant="secondary">
 					<Link
 						to={`/users/${user.username}`}
 						// this is for progressive enhancement
 						onClick={(e) => e.preventDefault()}
-						className="flex items-center gap-2"
+						className="flex items-center gap-2 p-0"
 					>
 						<img
-							className="h-8 w-8 rounded-full object-cover"
+							className="h-6 w-6 rounded-full object-cover"
 							alt={user.name ?? user.username}
 							src={getUserImgSrc(user.image?.id)}
 						/>
@@ -542,7 +542,7 @@ function SelectSearchType({
 				}
 			}}
 		>
-			<SelectTrigger className="h-9 w-24 justify-between border-0">
+			<SelectTrigger className="h-6 w-24 justify-between border-0">
 				<SelectValue placeholder={searchType ? `${searchType}` : ''} />
 			</SelectTrigger>
 			<SelectContent>
@@ -550,7 +550,7 @@ function SelectSearchType({
 					<StatusButton
 						type="submit"
 						status={isPending ? 'pending' : 'idle'}
-						className="flex h-6 w-16 items-center border-0 pl-4 pr-2 text-left shadow-none"
+						className="flex h-6 w-16 items-center justify-start border-0 pl-4 pr-2 text-left shadow-none"
 					>
 						Artist
 					</StatusButton>
@@ -559,7 +559,7 @@ function SelectSearchType({
 					<StatusButton
 						type="submit"
 						status={isPending ? 'pending' : 'idle'}
-						className="w-16text-left flex h-6 items-center justify-start border-0 pl-4 pr-2 shadow-none"
+						className="flex h-6 w-16 items-center justify-start border-0 pl-4 pr-2 text-left shadow-none"
 					>
 						Style
 					</StatusButton>
@@ -620,7 +620,7 @@ function Logo() {
 	return (
 		<Link
 			to="/"
-			className="logo group col-[2_/_3] row-[1_/_2] grid place-self-center px-2 text-lg leading-tight sm:px-4"
+			className="logo group col-[2_/_3] row-[2_/_3] grid place-self-center px-2 text-lg leading-tight sm:px-4"
 		>
 			<span className="font-bold leading-none text-cyan-200 transition group-hover:-translate-x-1">
 				kunst

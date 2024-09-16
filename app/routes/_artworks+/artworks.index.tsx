@@ -7,6 +7,7 @@ import {
 import { Link, NavLink, useLoaderData, useLocation } from '@remix-run/react'
 import chalk from 'chalk'
 import React from 'react'
+import MeshGradients from '#app/components/mesh-gradients.tsx'
 import SVGComponent from '#app/components/ui/eye.tsx'
 import { Icon } from '#app/components/ui/icon.js'
 import {
@@ -180,8 +181,8 @@ export default function ArtworksPage() {
 								>
 									<figure className="group-has-[input[type=radio]]:grid-cols-1]:mb-40 relative mb-8 flex break-inside-avoid flex-col items-center justify-between xl:mb-20">
 										<img
-                        alt={artwork.alt_text ?? undefined}
-                        key={artwork.id}
+											alt={artwork.alt_text ?? undefined}
+											key={artwork.id}
 											src={artwork.image_url ?? '../dummy.jpeg'}
 											className="hover-[gradient-border] w-full max-w-full rounded-md object-contain object-center md:rounded-lg"
 										/>
@@ -190,9 +191,12 @@ export default function ArtworksPage() {
                        //§   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .    MARK: Figcaption
                   */}
 										<figcaption
-											className="absolute bottom-0 z-50 flex w-full flex-wrap justify-between rounded-md backdrop-blur-[5px] backdrop-brightness-[0.5] backdrop-sepia-[90%] backdrop-filter"
+											className="absolute bottom-0 z-50 flex w-full flex-wrap justify-between rounded-md backdrop-blur-[5px] backdrop-brightness-[0.25] backdrop-sepia-[90%] backdrop-filter overflow-hidden"
 											style={{
-												color: colorHsl,
+												background:
+													(('linear-gradient(0deg,' +
+														artwork.colorHsl) as string) +
+													', #121212 1%, #0000 50%)',
 											}}
 										>
 											<div className="group-has-[input[type=radio]]:grid-cols-2]:justify-self-start relative flex w-full flex-wrap font-light tracking-[-0.020rem] text-[#f2ece2]">
@@ -253,6 +257,9 @@ export default function ArtworksPage() {
 				</ul>
 				<Footer />
 			</main>
+      <div className="canvas cols-[1_/_-1] absolute -z-10 h-full w-full">
+				{MeshGradients(0, 0, 50)}
+			</div>
 		</>
 	)
 }
@@ -265,7 +272,7 @@ function Logo() {
 			<span className="font-light leading-none text-cyan-200 transition group-hover/logo:-translate-x-1">
 				kunst
 			</span>
-			<span className="font-bold leading-none text-yellow-100 transition group-hover/logo:translate-x-1">f
+			<span className="font-bold leading-none text-yellow-100 transition group-hover/logo:translate-x-1">
 				räuber
 			</span>
 		</Link>

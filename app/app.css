@@ -17,7 +17,7 @@ h6 {
 
 :root {
 	--clamped: clamp(106.25%, 1rem + 0.5vw, 1.5rem);
-	--padding-inline: 1rem;
+	--padding-inline: clamp(1rem, 1rem + 1vw, 2rem);
 	font-size: var(--clamped);
 	--background: hsl(20 14.3 4.1);
 	color-scheme: dark;
@@ -52,35 +52,62 @@ h6 {
 	grid-template-columns:
 		var(--padding-inline) minmax(10px, 5rem) minmax(10px, max-content)
 		minmax(10px, 5rem) var(--padding-inline);
-	grid-template-rows: min-content min-content 1fr min-content;
+	grid-template-rows: 1rem 48px min-content 1fr min-content;
 	align-items: center;
 	justify-content: space-between;
 }
 
+/* MARK: LOGO ......................... */
+
 .logo {
 	display: inline-grid;
 	grid-column: 2 / 3;
-	grid-row: 1;
+	grid-row: 2;
 	justify-self: start;
 	padding: 1rem 0;
 	justify-content: start;
 }
 
+/*__ .. MARK: USER ........................ */
+
 .user {
 	grid-column: 4 /5;
-	grid-row: 1;
+	grid-row: 2;
 	justify-self: end;
-	padding: 1rem 0;
 }
+
+/*__ MARK: SEARCH-BAR ..................... */
 
 .search-bar {
 	justify-self: center;
 	align-self: center;
 }
 
+input div#search-clear,
+#search-clear::-webkit-search-cancel-button,
+input[type="search" i]:enabled:read-write:-webkit-any(:focus, :hover)::-webkit-search-cancel-button {
+  opacity: 0.5 !important;
+		color: #ccc !important;
+font-size: 1.25rem !important;
+
+
+	&:focus,
+	&:active {
+		opacity: 0.5 !important;
+		color: #ccc !important;
+	}
+}
+
+#picker,
+input::-webkit-calendar-picker-indicator {
+	display: none !important;
+}
+
+/*__ MARK: FOOTER ........................ */
+
 footer {
 	position: sticky;
-	top: 100vh;
+	top: calc(100vh - 4rem);
 }
 
 /*
@@ -269,19 +296,7 @@ button {
 	touch-action: manipulation;
 }
 
-input #search-clear,
-#search-clear::-webkit-search-cancel-button {
-	&:focus,
-	&:active {
-		opacity: 0.5 !important;
-		color: #ccc !important;
-	}
-}
 
-#picker,
-input::-webkit-calendar-picker-indicator {
-	display: none !important;
-}
 
 /* Route ArtworkId MARK: Details */
 
@@ -312,102 +327,7 @@ details {
 		);
 	}
 
-	/* for viewport-width < 1024px */
-	main {
-		&:has(details[open]) {
-			/* margin-left: 10rem; */
 
-			figure > img {
-				position: relative;
-				top: -1rem;
-				height: auto;
-				max-height: 11rem;
-				-o-object-fit: contain;
-				object-fit: contain;
-				transition: all 1s ease-in-out;
-			}
-		}
-	}
-
-	@media (min-width: 1024px) {
-		main:has(details[open]) figure > img {
-			position: absolute !important;
-			top: 1rem !important;
-			right: 70% !important;
-			height: auto;
-			max-height: 40% !important;
-			-o-object-fit: contain;
-			object-fit: contain;
-			transition: all 1s ease-in-out;
-		}
-
-		details[open] {
-			position: static !important;
-			/* background: radial-gradient(circle at -50% 80%, #0000, #f0f 5%, #0000)!important;
-    background-size: 150% !important; */
-		}
-	}
-}
-
-details .btn-view {
-	display: flex;
-
-	&has:details[open] {
-		display: none;
-		z-index: 900;
-	}
-}
-
-/* root */
-header figure > img {
-	display: inline;
-	-o-object-fit: contain;
-	object-fit: contain;
-	/* max-height: clamp(1rem, calc(100vh - 15rem), calc(100vh - 10rem)) !important; */
-	max-width: clamp(283px, calc(100% - 2rem), min(843px, 100%)) !important;
-	border-radius: 1% !important;
-	transition: opacity 300ms ease-out;
-}
-
-main:has(details[open]) {
-	q figure > img {
-		position: relative;
-		top: -1rem;
-		right: 0rem;
-		height: auto;
-		max-height: 8rem;
-		-o-object-fit: contain;
-		object-fit: contain;
-		transition: all 1s ease-in-out;
-	}
-}
-
-details {
-	overflow-y: scroll;
-	scrollbar-width: none;
-	/* Firefox */
-	-ms-overflow-style: none;
-	/* Internet Explorer 10+ */
-
-	&::-webkit-scrollbar {
-		/* WebKit */
-		width: 0;
-		height: 0;
-	}
-}
-
-body:has(details[open]) {
-	justify-content: flex-start;
-
-	main > button {
-		display: block;
-	}
-}
-
-details li {
-	&:last-child {
-		padding-bottom: 2rem;
-	}
 
 	p {
 		hyphens: auto;
@@ -438,7 +358,7 @@ details li {
 		opacity: 0.85;
 	}
 	span {
-		white-space: normal;Terminal: Clear
+		white-space: normal;
 	}
 }
 

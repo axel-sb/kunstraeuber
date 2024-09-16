@@ -28,6 +28,9 @@ export default {
 		require('tailwindcss-radix')(),
 		animatePlugin,
 		radixPlugin,
+		require('tailwindcss/plugin')(({ addVariant }: { addVariant: (variant: string, style: string | ((params: any) => string)) => void }) => {
+      addVariant('search-cancel', '&::-webkit-search-cancel-button')
+    }),
 		plugin(function ({ matchUtilities, theme }) {
 			matchUtilities(
 				{

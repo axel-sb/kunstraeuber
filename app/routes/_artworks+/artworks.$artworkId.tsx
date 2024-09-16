@@ -49,7 +49,7 @@ export const action = async ({ params }: ActionFunctionArgs) => {
 	return redirect(`./`)
 }
 
-//    .................................................    MARK: Loader
+//    ......................................    MARK: Loader
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
 	invariantResponse(params.artworkId, 'Missing artworkId param')
@@ -84,7 +84,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 	return json({ artwork: filteredArtwork })
 }
 
-//    ...............................................   MARK: Favorite
+//    ...........................   MARK: FAVORITE
 
 const Favorite: FunctionComponent<{
 	artwork: Pick<Artwork, 'favorite'>
@@ -123,12 +123,13 @@ const Favorite: FunctionComponent<{
 	)
 }
 
-//    ...........................................   MARK: export default
+//    ..........................   MARK: export default
 
 export default function ArtworkId() {
 	const { artwork } = useLoaderData<typeof loader>()
 
-	const colorHsl = `${artwork.colorHsl}`
+	const colorHslIcon = `hsl(${artwork.color_h}, ${artwork.color_s}%, 50%)`
+	console.log('colorHslIcon', colorHslIcon)
 	const colorH = parseInt(`${artwork.color_h}`)
 	const colorS = parseInt(`${artwork.color_s}`)
 	const colorL = parseInt(`${artwork.color_l}`)
@@ -152,231 +153,98 @@ export default function ArtworkId() {
 
 	return (
 		<>
-			{/* // ........  MARK: Header ▀▀▀	.............................	 */}
-			<header>
+			{/* // ........  MARK:HEADER ▀▀▀	....................	 */}
+			<header className="px-4">
 				<Logo />
+				<ul
+					id="currGradColors"
+					className="absolute left-32 top-4 mx-auto flex h-16 w-3/5"
+				></ul>
 				<Favorite artwork={artwork} />
 			</header>
-			{/* // ......  MARK: Figure🪆	 .............................	 */}
-			<figure className="">
-				<div className="image-wrapper">
+			{/* // .MARK: FIGURE 🪆	 .....................	 */}
+			<figure className="row-[2_/_3] col-[1_/_-1] grid gap-y-6 h-full">
+				<div className="image-wrapper row-[1_/_2] max-h-[calc(100dvh-18rem)]">
 					<img
-						className="mx-auto max-h-[80dvh] max-w-[clamp(281px,100%,calc(100vw-2rem))] rounded-md object-contain object-center"
+						className="mx-auto h-auto max-h-[calc(100dvh-18rem)] max-w-[clamp(calc(100vw-2rem),100%,calc(100vw-2rem))] rounded-md object-contain object-center"
 						alt={artwork.alt_text ?? undefined}
 						key={artwork.id}
 						src={artwork.image_url ?? '../../../four-mona-lisas-sm.jpg'}
-						style={{
-							boxShadow: `
-                0px 0px 0px 0.5px #fffa, 0px 0px 1px 0 #fff5, 0px 0px 1.5px 1px #0008, 0px 0px 2px 1.5px #3338, 2px 4px 2px 0 #5554, 4px 8px 6px 0 #0008,  8px 16px 12px 0 #0004`,
-						}}
 					/>
 				</div>
-				{/*//    ...............   MARK:  Figcaption ............... */}
-				<figcaption className="">
-					<div className="toolbar col-[1_/_-1] row-[1_/_2] justify-between">
-						{/* // ............  MARK: btn-back ⏪		...............	*/}
-						<Button
-							className="btn-back relative col-[1_/_2] inline-flex h-10 w-10 cursor-pointer justify-self-start rounded-full text-yellow-50/50"
-							variant="ghost"
-							size="ghost"
-							onClick={() => {
-								navigate(-1)
-							}}
-						>
-							<Icon
-								name="cross-1"
-								size="xl"
-								className=""
-								style={{ color: colorHsl }}
-							/>
-						</Button>
-						{/*// ........  MARK: info-circled ℹ️ ..................  */}
-						<div className="navlink-info col-[2_/_3] row-[1_/_2] inline-flex h-10 w-10 justify-center justify-self-center">
-							<NavLink
-								className={`$({ isActive, isPending }) => isActive ? 'active' : 'pending' inline-flex h-10 w-10 place-items-center`}
-								to={`../artworks/details/${artwork.id}`}
-								style={{ color: colorHsl }}
-							>
-								<Icon
-									name="info-circled"
-									size="font"
-									className="mx-auto text-2xl"
-									style={{ color: colorHsl }}
-								/>
-							</NavLink>
-						</div>
-						{/*//  ..................  MARK: zoom 🔎 	..................   */}
-						<div className="navlink-zoom col-[3_/_4] inline-flex h-10 w-10 cursor-pointer justify-self-end rounded-full pt-0.5">
-							<NavLink
-								className={`$({ isActive, isPending }) => isActive ? 'active' : 'pending' inline-flex h-10 w-10 place-items-center`}
-								to={`../artworks/zoom/${artwork.id}`}
-								style={{ color: colorHsl }}
-							>
-								<Icon
-									name="zoom-in"
-									className="stroke-background text-[2rem]"
-									size="font"
-									style={{
-										color: 'colorHsl',
-										stroke: 'hsl(20 14.3 4.1)',
-										strokeWidth: '.3px',
-										fontSize: '2.1rem',
-									}}
-								/>
-							</NavLink>
-						</div>
-					</div>
-					{/* // ......................................  MARK: Title */}
-					<div className="caption-text col-[1_/_-1] row-[2_/_3] self-end">
-						<div className="title col-[1_/_-1] row-[2_/_3] place-self-center text-balance pt-8 text-center text-lg">
+				{/*//  .MARK:FIGCAPTION ...................... */}
+				<figcaption className="row-[2_/_3] col-[2_/_5] px-4">
+					{/* // .MARK: CAPTION-TEXT .............  */}
+					<div className="caption-text col-[1_/_-1] row-[1_/_2] text-xl">
+						<div className="title col-[1_/_-1] row-[2_/_3] text-balance text-center">
 							{artwork.title}
 						</div>
-						<div className="artist col-[1_/_-1] row-[3_/_4] place-self-center text-balance text-center text-lg">
+						<div className="artist col-[1_/_-1] row-[3_/_4] text-balance text-center">
 							{artwork.artist_title}
 						</div>
 					</div>
-					{/*
-          // #region details //   MARK: Details
-          */}
-					{/* <details className="group flex h-full w-full flex-1 overflow-auto sm:max-w-[843px] lg:max-w-[calc(843px+8rem)]"> */}
-					{/*
-          // ..................................................  MARK:Summary
-					*/}
-					{/* <summary
-								className="relative z-10 mx-auto flex w-full flex-grow list-none gap-4 pt-6 group-has-[details[open]]:h-min lg:mt-4"
-							>
-								<div className="image-caption hidden h-full w-full flex-wrap justify-center gap-4 group-has-[details[open]]:h-12 group-has-[details[open]]:items-center group-has-[details[open]]:justify-between">
-									<div className="hidden h-10 w-10 items-center justify-center group-has-[details[open]]:inline-flex">
-										<Icon
-											name="cross-circled"
-											size="font"
-											className="text-[1.4rem]"
-											style={{ color: colorHsl }}
-										/>
-									</div>
-								</div>
-							</summary> */}
-					{/*
-                 // ....................................................  MARK: 🡸Expander🡺
-							*/}
-					{/* <div
-								className="group-has[details[open]]:grid-rows-1 group-has[details[open]]:overflow-y-scroll grid grid-rows-none"
-								id="expander"
-								style={{
-									animation: 'ease-out expand forwards 1.5s alternate',
-								}}
-							>
-								<div
-									className="expander-content min-h-0 leading-relaxed"
-								>
-									<ul className="flex h-full flex-col gap-2 px-4 leading-relaxed">
-										<li key="title">
-											<span className="list-item font-medium opacity-75">
-												Title
-												{': '}
-											</span>
-											<span className="detail-content inline-block text-lg">
-												{artwork.title}
-											</span>
-										</li>
-
-										<li
-											dangerouslySetInnerHTML={artist}
-											className="hyphens-auto pb-4 text-lg"
-										></li>
-
-										{Object.entries(artwork)
-											.filter(
-												([key, value]) =>
-													value &&
-													value !== '' &&
-													key !== 'id' &&
-													key !== 'image_url' &&
-													key !== 'alt_text' &&
-													key !== 'Title' &&
-													key !== 'Description' &&
-													key !== 'Artist' &&
-													key !== 'color_h' &&
-													key !== 'color_s' &&
-													key !== 'color_l' &&
-													key !== 'Category' &&
-													key !== 'width' &&
-													key !== 'height' &&
-													key !== 'image_id' &&
-													key !== 'is_boosted' &&
-													value !== 'none' &&
-													value !== 'null' &&
-													(key === 'Date' ||
-														key === 'Place' ||
-														key === 'Medium'),
-											)
-											.sort(([keyA], [keyB]) => {
-												const order = ['Date', 'Place', 'Medium', ,]
-												const indexA = order.indexOf(keyA)
-												const indexB = order.indexOf(keyB)
-												return indexA - indexB
-											})
-											.map(([key, value]) => (
-												<li key={key} className="pb-6">
-													<span className="list-item font-medium opacity-60">
-														{key}:
-													</span>{' '}
-													<span className="detail-content inline-block">
-														{value}
-													</span>
-												</li>
-											))}
-										<li
-											className="max-w-prose pb-4 pt-4 leading-relaxed"
-											dangerouslySetInnerHTML={description}
-										></li>
-										{Object.entries({
-											Style: artwork.style_titles,
-											Subject: artwork.subject_titles,
-											Type: artwork.artwork_type_title,
-											Technique: artwork.technique_titles,
-											Provenance: artwork.provenance_text,
-										})
-											.filter(
-												([_, value]) =>
-													value &&
-													value !== '' &&
-													value !== 'none' &&
-													value !== 'null',
-											)
-											.map(([key, value]) => (
-												<li key={key}>
-													<span className="list-item font-medium opacity-60">
-														{key}
-														{': '}
-													</span>
-
-													<span className="detail-content inline-block pb-4">
-														{value}
-													</span>
-												</li>
-											))}
-									</ul>
-								</div>
-							</div>
-						</details> */}
-					{/*
-          // #endregion DETAILS .....
-          */}
 				</figcaption>
 			</figure>
-			{/* <footer className=""></footer> */}
+			<footer className="row-[3_/_4]">
+				{/* //  .MARK: 🧭 TOOLBAR ⏪	...................*/}
+				<div
+					className="toolbar col-[1_/_-1] w-full justify-around"
+					style={{ color: colorHslIcon }}
+				>
+					{/* //  .MARK: ⃝ btn-back ⏪	...................*/}
+					<Button
+						className="btn-back relative col-[1_/_2] inline-flex h-10 w-10 flex-[2_1_auto] cursor-pointer justify-self-start rounded-full text-yellow-50/50"
+						variant="ghost"
+						size="ghost"
+						onClick={() => {
+							navigate(-1)
+						}}
+					>
+						<Icon
+							name="cross-1"
+							size="font"
+							className="p-0.5 text-[2rem] xl:text-xl"
+						/>
+					</Button>
+					{/*// .MARK: ⃝ info-circled ℹ️ .................  */}
+					<div className="navlink-info col-[2_/_3] row-[1_/_2] inline-flex h-10 w-10 flex-[6_1_auto] justify-center justify-self-center">
+						<NavLink
+							className={`$({ isActive, isPending }) => isActive ? 'active' : 'pending' inline-flex h-10 w-10 place-items-center p-1.5`}
+							to={`../artworks/details/${artwork.id}`}
+						>
+							<Icon
+								name="info-circled"
+								size="font"
+								className="mx-auto p-0.5 text-[2.05rem] xl:text-xl"
+							/>
+						</NavLink>
+					</div>
+					{/*//. MARK: ⃝ ZOOM 🔎 ........................ */}
+					<div className="navlink-zoom col-[3_/_4] inline-flex h-10 w-10 flex-[2_1_auto] cursor-pointer justify-center justify-self-center rounded-full pt-0.5">
+						<NavLink
+							className={`$({ isActive, isPending }) => isActive ? 'active' : 'pending' z-10 inline-flex h-10 w-10 place-items-center`}
+							to={`../artworks/zoom/${artwork.id}`}
+						>
+							<Icon
+								name="zoom-in"
+								className="stroke-background text-[2.05rem] xl:text-xl"
+								size="font"
+								style={{
+									stroke: 'hsl(20 14.3 4.1)',
+									strokeWidth: '.2px',
+								}}
+							/>
+						</NavLink>
+					</div>
+				</div>
+			</footer>
 			<div className="canvas cols-[1_/_-1] absolute -z-10 h-full w-full">
-				{MeshGradients(
-					colorH,
-					colorS,
-					colorL
-					)}
+				{MeshGradients(colorH, colorS, colorL)}
 			</div>
 		</>
 	)
 
-	// ....................................................  MARK: Logo
+	//.MARK: ⃝ LOGO ........................
 
 	function Logo() {
 		return (
