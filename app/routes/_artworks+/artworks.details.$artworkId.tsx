@@ -20,7 +20,7 @@ import chalk from 'chalk'
 import { type FunctionComponent } from 'react'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.js'
-import kunstraeuber from '../../../avatars/kunstraeuber.png'
+// import kunstraeuber from '../../../avatars/kunstraeuber.png'
 // import circles from '../../../circles.svg'
 import { getArtwork, updateArtwork } from '../resources+/search-data.server.tsx'
 import detailsStyles from './artworks.details.artworkId.css?url'
@@ -128,9 +128,9 @@ export default function ArtworkDetails() {
 	const { artwork } = useLoaderData<typeof loader>()
 	const navigate = useNavigate()
 	const halftoneUrl = `url(${artwork.image_url}) 50% / cover` || 'none'
-  const colorHsl = artwork.colorHsl
-  const colorHslIcon = `hsl(${artwork.color_h}, ${artwork.color_s}%, 50%)`
-  const colorHslGradientBg = `hsl(${artwork.color_h}, 100%, 55% / 1.0)`
+	// const colorHsl = artwork.colorHsl
+	const colorHslIcon = `hsl(${artwork.color_h}, ${artwork.color_s}%, 50%)`
+	const colorHslGradientBg = `hsl(${artwork.color_h}, 100%, 55% / 1.0)`
 
 	const artist = {
 		__html:
@@ -294,9 +294,9 @@ export default function ArtworkDetails() {
 }
 
 function Logo() {
-  const {
-		artwork: { colorHsl: colorHsl },
-	} = useLoaderData<typeof loader>()
+	const { artwork } = useLoaderData<typeof loader>()
+	// const colorHslGradientBg = `hsl(${artwork.color_h}, 100%, 55% / 1.0)`
+	const colorHslIcon = `hsl(${artwork.color_h}, ${artwork.color_s}%, 50%)`
 
 	return (
 		<>
@@ -308,15 +308,12 @@ function Logo() {
 				<div>
 					<section className="absolute left-0 -z-10 h-[100vw] w-full opacity-30">
 						<div className="halftone-anim bg-black mix-blend-darken">
-              <div
-                className="halftone"
-                style={{ background: `hsl(${colorHsl})` }}
-              ></div>
-            </div>
+							<div className="halftone" style={{ color: colorHslIcon }}></div>
+						</div>
 					</section>
 					<span
 						className="inline-block px-4 text-xl font-medium leading-none transition group-hover:-translate-x-1"
-						style={{ color: 'var(--gray-8)' }}
+						style={{ color: colorHslIcon }}
 					>
 						kunst
 					</span>
