@@ -26,9 +26,9 @@ div.halftone {
 	margin: 0;
 	background:
 		linear-gradient(-45deg, #0000, #0008 25% 75%, #0000),
-		linear-gradient(-45deg, #0000, var(--colorHsl), #0000),
+		linear-gradient(-45deg, #0000, var(--colorHslGradientBg), #0000),
 		var(--lyr0, var(--img)) var(--sep,) var(--lyr1,);
-	--dots: radial-gradient(circle, #0000, #adaba6) 0 0 / px 10px space;
+	--dots: radial-gradient(circle, #0000, #adaba6) 0 0 / 10px 10px space;
 }
 
 .filter .halftone {
@@ -89,7 +89,7 @@ p {
 .logo {
 	display: inline-grid;
 	padding: 1rem 0;
-	justify-content: start;
+	justify-content: end;
 	background: radial-gradient(
 		circle at 3.25rem,
 		#0c0a0980 2rem,
@@ -110,10 +110,7 @@ p {
 	); */
 
 	span {
-		background: linear-gradient(to right, #0000, #0c0a09);
-		backdrop-filter: contrast(0.7) saturate(150) blur(5px);
 		display: inline-block;
-		backdrop-filter: contrast(0.7) saturate(0) blur(5px);
 		width: 30%;
 	}
 	& span(nth-child(2)) {
@@ -130,7 +127,7 @@ p {
 		height: 100%;
 		background-color: #eee;
 		background-image: radial-gradient(circle, #0000, hsl(20 14.3 4.1 / 1));
-		background-size: 20px 20px;
+		background-size: 10px 10px;
 		opacity: 0.1;
 		filter: contrast(20);
 	} */
@@ -172,16 +169,14 @@ section {
 		j0 4.6087s linear infinite,
 		k0 7.5s linear infinite;
 	display: grid;
-	height: 4.5rem;
+	/* height: 4.5rem; */
 	--mask: linear-gradient(calc(var(--k0) * 360deg), red, rgba(255, 0, 0, 0.45));
 	/* scroll-snap-align: start; */
-	--map: conic-gradient(
-		from calc(var(--k0) * 360deg),
-		#777,
-		#000 calc(var(--j0) * 50%) calc(100% - var(--j0) * 50%),
-		#777
-	);
-	animation-direction: normal, alternate, normal;
+	--map:
+  linear-gradient(#000, #777, #000)
+  0 calc(var(--j0)*10vh)/ 100% 10vh ;
+
+	animation-direction: normal, normal, normal;
 	animation-timing-function: linear, ease-out, linear;
 }
 
@@ -191,7 +186,18 @@ section::before {
 	grid-row: 1;
 }
 
-section::before {
+section:nth-child(2) {
+  --map:
+  conic-gradient(from calc(var(--k0)*360deg),
+  #777,
+  #000 calc(var(--j0)*50%) calc(100% - var(--j0)*50%),
+  #777);
+  animation-direction: normal, alternate, normal;
+  animation-timing-function: linear, ease-out, linear;
+}
+
+
+/* section::before {
 	background: linear-gradient(
 		45deg,
 		#eee,
@@ -201,7 +207,7 @@ section::before {
 		#eee
 	);
 	content: '';
-}
+} */
 
 /* section:nth-child(2) {
   --map:
@@ -264,7 +270,7 @@ section:not(:hover) {
 			--map,
 			linear-gradient(calc(var(--k0) * 360deg), #777 9%, #000)
 		),
-		var(--pattern, radial-gradient(closest-side, #888, #000) 0/1em 1em space);
+		var(--pattern, radial-gradient(closest-side, #888, #000) 0/10px 10px space);
 	background-blend-mode: screen;
 	mix-blend-mode: multiply;
 	filter: contrast(21);

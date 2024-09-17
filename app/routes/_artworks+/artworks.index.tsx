@@ -191,7 +191,7 @@ export default function ArtworksPage() {
                        //§   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .    MARK: Figcaption
                   */}
 										<figcaption
-											className="absolute bottom-0 z-50 flex w-full flex-wrap justify-between rounded-md backdrop-blur-[5px] backdrop-brightness-[0.25] backdrop-sepia-[90%] backdrop-filter overflow-hidden"
+											className="z-50 flex w-full flex-wrap justify-between rounded-md backdrop-blur-sm overflow-hidden"
 											style={{
 												background:
 													(('linear-gradient(0deg,' +

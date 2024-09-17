@@ -130,18 +130,18 @@ export default function ArtworkDetails() {
 	const halftoneUrl = `url(${artwork.image_url}) 50% / cover` || 'none'
   const colorHsl = artwork.colorHsl
   const colorHslIcon = `hsl(${artwork.color_h}, ${artwork.color_s}%, 50%)`
-  const colorHslGradientBg = `hsl(${artwork.color_h}, ${artwork.color_s}%, 25%)`
+  const colorHslGradientBg = `hsl(${artwork.color_h}, 100%, 55% / 1.0)`
 
 	const artist = {
 		__html:
-			'<div class="opacity-80 text-[1.1rem]">Artist:  </div> ' +
+			'<div class="artist-caption  opacity-80 text-lg">Artist:  </div> ' +
 			artwork.artist_display,
 	}
 
 	const description = {
 		__html:
 			artwork.description && artwork.description !== 'null'
-				? '<div class="text-base opacity-80 pb-4">Description: </div>' +
+				? '<div class="text-base opacity-80 pb-4 backdrop-blur-xl">Description: </div>' +
 					artwork.description
 				: '',
 	}
@@ -152,6 +152,41 @@ export default function ArtworkDetails() {
 
 	return (
 		<div className="details-container mx-auto max-w-prose">
+			<section className="absolute left-0 -z-10 h-[100vw] w-full opacity-30">
+				<div className="halftone-anim"></div>
+			</section>
+
+			{/* // ........  MARK: ◐ HALFTONE  	.........................	 */}
+
+			<aside className="absolute opacity-30 filter">
+				<div
+					className="halftone"
+					style={
+						{
+							'--img': halftoneUrl,
+							'--colorHsl': colorHslGradientBg,
+							backgroundSize: 'cover',
+						} as React.CSSProperties
+					}
+				></div>
+			</aside>
+
+			{/* // .MARK: TITLE & ARTIST (details) ..................... */}
+
+			<div
+				className="mx-auto flex h-full w-fit max-w-prose flex-col items-center justify-end gap-2 px-4 pb-4 leading-relaxed"
+				style={{ color: colorHslIcon }}
+			>
+				<div className="title-artist-wrapper max-w-fit rounded-3xl text-center">
+					<div className="inline text-[1.1rem] text-lg opacity-80">
+						Title
+						{': '}
+					</div>
+					<div className="isolate inline-block text-2xl font-bold backdrop-blur-sm">
+						{artwork.title}
+					</div>
+				</div>
+			</div>
 			<header className="flex w-full items-center justify-between p-4">
 				{/* //.MARK: ⃝ btn-back ⏪	...................*/}
 
@@ -170,38 +205,10 @@ export default function ArtworkDetails() {
 				<Favorite artwork={artwork} />
 			</header>
 
-			{/* // ........  MARK: ◐ HALFTONE  	.........................	 */}
-
-			<aside className="absolute opacity-30 filter">
-				<div
-					className="halftone"
-					style={
-						{
-							'--img': halftoneUrl,
-							'--colorHsl': colorHslGradientBg,
-						} as React.CSSProperties
-					}
-				></div>
-			</aside>
-
-			{/* // .MARK: TITLE & ARTIST (details) ..................... */}
-
-			<div className="mx-auto flex h-full max-w-prose flex-col justify-end gap-2 px-4 pb-4 leading-relaxed">
-				<div className="title-artist-wrapper">
-					<div className="text-[1.1rem] text-lg opacity-80">
-						Title
-						{': '}
-					</div>
-					<div className="inline-block pb-4 text-xl text-white opacity-[0.99]">
-						{artwork.title}
-					</div>
-
-					<div
-						dangerouslySetInnerHTML={artist}
-						className="hyphens-auto pb-4 text-xl text-white opacity-[0.99]"
-					></div>
-				</div>
-			</div>
+			<div
+				dangerouslySetInnerHTML={artist}
+				className="artist w-fit hyphens-auto px-4 text-lg"
+			></div>
 
 			{/* // .MARK:► UL (details) ..................... */}
 			<ul className="mx-auto flex max-w-prose flex-col gap-2 px-4 py-8 leading-relaxed">
@@ -226,10 +233,17 @@ export default function ArtworkDetails() {
 							key !== 'is_boosted' &&
 							value !== 'none' &&
 							value !== 'null' &&
-							(key === 'Date' || key === 'Place' || key === 'Medium'),
+							(key === 'date_display' ||
+								key === 'place_of_origin' ||
+								key === 'medium_display'),
 					)
 					.sort(([keyA], [keyB]) => {
-						const order = ['Date', 'Place', 'Medium', ,]
+						const order = [
+							'date_display',
+							'place_of_origin',
+							'medium_display',
+							,
+						]
 						const indexA = order.indexOf(keyA)
 						const indexB = order.indexOf(keyB)
 						return indexA - indexB
@@ -286,23 +300,30 @@ function Logo() {
 
 	return (
 		<>
-			<section className="absolute left-[0] w-1/3">
-				<div className="halftone-anim"></div>
-			</section>
 			<Link
 				to="/"
-				className="logo group relative z-10 w-full leading-snug pl-4"
+				className="logo group relative z-10 w-full pl-4 leading-snug"
 				style={{}}
 			>
-				<span
-					className="px-4 text-xl font-medium leading-none transition group-hover:-translate-x-1 inline-block"
-					style={{ color: 'var(--gray-8)' }}
-				>
-					kunst
-				</span>
-				<span className="px-4 text-xl font-light leading-none text-yellow-100 transition inline-block">
-					räuber
-				</span>
+				<div>
+					<section className="absolute left-0 -z-10 h-[100vw] w-full opacity-30">
+						<div className="halftone-anim bg-black mix-blend-darken">
+              <div
+                className="halftone"
+                style={{ background: `hsl(${colorHsl})` }}
+              ></div>
+            </div>
+					</section>
+					<span
+						className="inline-block px-4 text-xl font-medium leading-none transition group-hover:-translate-x-1"
+						style={{ color: 'var(--gray-8)' }}
+					>
+						kunst
+					</span>
+					<span className="inline-block px-4 text-xl font-light leading-none text-yellow-100 transition">
+						räuber
+					</span>
+				</div>
 			</Link>
 		</>
 	)
