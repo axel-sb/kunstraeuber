@@ -5,7 +5,8 @@
 		"**/*.tsx",
 		"upsert.ts",
 		"api-data_2024-07-30.d.ts",
-		"hex-to-oklch.js"
+		"src",
+		"build"
 	],
 	"exclude": ["**/_z.local.notes"],
 	"extends": ["@epic-web/config/typescript"],
