@@ -302,24 +302,24 @@ function Logo() {
 		<>
 			<Link
 				to="/"
-				className="logo group relative z-10 w-full pl-4 leading-snug"
+				className="logo group relative z-10 w-full leading-snug"
 				style={{}}
 			>
-				<div>
-					<section className="absolute left-0 -z-10 h-[100vw] w-full opacity-30">
+				<div className="right-12 w-screen overflow-hidden px-4 text-right">
+					<section className="absolute left-0 -z-10 h-20 w-full opacity-30">
 						<div className="halftone-anim bg-black mix-blend-darken">
 							<div className="halftone" style={{ color: colorHslIcon }}></div>
 						</div>
 					</section>
 					<span
-						className="inline-block px-4 text-xl font-medium leading-none transition group-hover:-translate-x-1"
+						className="mt-4 inline-block text-xl font-medium leading-none backdrop-blur-sm transition group-hover:translate-x-1"
 						style={{ color: colorHslIcon }}
 					>
 						kunst
 					</span>
-					<span className="inline-block px-4 text-xl font-light leading-none text-yellow-100 transition">
+					<div className="px-4 text-xl font-light leading-none text-yellow-100 backdrop-blur-sm transition group-hover:-translate-x-1">
 						räuber
-					</span>
+					</div>
 				</div>
 			</Link>
 		</>

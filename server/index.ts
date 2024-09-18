@@ -118,7 +118,7 @@ app.use(
 				].filter(Boolean),
 				'font-src': ["'self'"],
 				'frame-src': ["'self'"],
-				'img-src': ["'self'", 'data:'],
+				'img-src': ["'self'", 'data:', 'blob:', 'img-src: *'],
 				'script-src': [
 					"'strict-dynamic'",
 					"'self'",
@@ -200,7 +200,7 @@ async function getBuild() {
 	try {
 		const build = viteDevServer
 			? await viteDevServer.ssrLoadModule('virtual:remix/server-build')
-			: await import('../build/server/index.js')
+			: await import('../build/server')
 
 		return { build: build as unknown as ServerBuild, error: null }
 	} catch (error) {

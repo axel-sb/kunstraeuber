@@ -47,14 +47,14 @@ export default function Zoom() {
 	const colorStyle = { '--color': colorHsl } as React.CSSProperties
 	return (
 		<>
-			<div className="backdrop-brightness-200 absolute bottom-6 left-8 z-10 inline-flex h-9 w-9 rounded-full bg-white/70 text-black backdrop-saturate-200">
+			<div className="absolute bottom-6 left-8 z-10 inline-flex h-9 w-9 rounded-full bg-white/70 text-black backdrop-brightness-200 backdrop-saturate-200">
 				<Icon
 					name="x"
 					className="h-9 w-9"
 					style={{
 						backgroundColor: '#0000',
 						borderRadius: '50%',
-						backgroundImage: 'radial-gradient(#0000, #0000 38%, #000 75% 100%)',
+						backgroundImage: `radial-gradient(#0000, #0000 38%, ${colorStyle} 75% 100%)`,
 					}}
 					onClick={() => navigate(-1)}
 				/>

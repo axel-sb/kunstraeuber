@@ -86,9 +86,18 @@ p {
 	color: #eee;
 }
 
+
+
+.logo {
+	div.halftone,
+	div.halftone-anim {
+		height: 5rem;
+	}
+}
+
 .logo {
 	display: inline-grid;
-	padding: 1rem 0;
+	padding: 1rem;
 	justify-content: end;
 	background: radial-gradient(
 		circle at 3.25rem,
@@ -109,14 +118,6 @@ p {
 		#0c0a09d0
 	); */
 
-	span {
-		display: inline-block;
-		width: 30%;
-
-		& span(nth-child(2)) {
-			width: 40%;
-		}
-	}
 
 	/* &::after {
 		content: '';
