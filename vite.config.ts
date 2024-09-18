@@ -35,7 +35,7 @@ export default defineConfig({
 				'@some-scope/**',
 			],
 		}),
-		// rdt 
+		// rdt
 		remixDevTools(),
 		remix({
 			ignoredRouteFiles: ['**/*'],
