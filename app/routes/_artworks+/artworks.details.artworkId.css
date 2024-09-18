@@ -276,3 +276,10 @@ section:not(:hover) {
 }
 
 /*#endregion*/
+
+.myElem {
+	width: 86%;
+	aspect-ratio: 2/1;
+	border-radius: 50%/ 100% 100% 0 0;
+	background: tomato;
+}
