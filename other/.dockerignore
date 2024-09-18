@@ -1,9 +1,12 @@
 # This file is moved to the root directory before building the image
 
 /node_modules
-*.log
+_.log
 .DS_Store
 .env
 /.cache
 /public/build
 /build
+api-data_2024_.*js
+_z_local*
+/.history

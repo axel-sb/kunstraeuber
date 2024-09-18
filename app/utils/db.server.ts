@@ -29,6 +29,7 @@ export const prisma = remember('prisma', () => {
 							? 'redBright'
 							: 'red'
 		const dur = chalk[color](`${e.duration}ms`)
+		console.info(`prisma:query - ${dur}`)
 		/* console.info(`prisma:query - ${dur} - ${e.query}`) */
 	})
 	void client.$connect()

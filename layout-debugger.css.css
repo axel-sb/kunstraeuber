@@ -1,0 +1,128 @@
+/*
+	Hue rotation
+	------------
+*/
+
+* {
+	--hue: 0;
+}
+* > * {
+	--hue: 60;
+}
+* > * > * {
+	--hue: 120;
+}
+* > * > * > * {
+	--hue: 180;
+}
+* > * > * > * > * {
+	--hue: 240;
+}
+* > * > * > * > * > * {
+	--hue: 300;
+}
+* > * > * > * > * > * > * {
+	--hue: 0;
+}
+* > * > * > * > * > * > * > * {
+	--hue: 60;
+}
+* > * > * > * > * > * > * > * > * {
+	--hue: 120;
+}
+* > * > * > * > * > * > * > * > * > * {
+	--hue: 180;
+}
+* > * > * > * > * > * > * > * > * > * > * {
+	--hue: 240;
+}
+* > * > * > * > * > * > * > * > * > * > * > * {
+	--hue: 300;
+}
+
+/*
+	Draw elements' boxes
+	--------------------
+*/
+
+body :hover,
+body :hover > * {
+	/* Opaque version */
+	--c-solid: hsl(var(--hue), 100%, 50%);
+
+	/* Translucent version */
+	--c-bg: hsl(var(--hue), 100%, 50%, 0.1);
+
+	outline: 1px solid var(--c-solid);
+
+	background-image:
+
+/* Content box fill */
+		linear-gradient(var(--c-bg), var(--c-bg)),
+		/* Content box white underpaint */ linear-gradient(white, white),
+		/* Padding box stripes */
+			repeating-linear-gradient(
+				45deg,
+				var(--c-solid),
+				var(--c-solid) 1px,
+				var(--c-bg) 1px,
+				var(--c-bg) 3px
+			);
+
+	background-origin: content-box, content-box, padding-box;
+	background-repeat: no-repeat;
+}
+
+/*
+	Show elements' classes / ID
+	---------------------------
+*/
+
+[id]:hover::before,
+[class]:hover::before {
+	position: absolute;
+	transform: translate(0, -100%);
+	background: #000;
+	color: hsl(var(--hue), 100%, 80%);
+}
+
+:not([id])[class]:hover::before {
+	content: '.' attr(class);
+}
+
+:not([class])[id]:hover::before {
+	content: '#' attr(id);
+}
+
+[id][class]:hover::before {
+	content: '#' attr(id) '.' attr(class);
+}
+
+/*
+	These are purely to style the demo page
+ */
+
+article {
+	border: 1px solid black;
+	padding: 2em;
+	background: #f0f0f0;
+	margin: 2em auto;
+	max-width: 60em;
+}
+
+img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+
+.gallery {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-gap: 1em;
+}
+
+.gallery > * {
+	padding: 0.5em;
+	box-sizing: border-box;
+}
