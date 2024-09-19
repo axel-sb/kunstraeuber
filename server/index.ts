@@ -202,7 +202,8 @@ async function getBuild(): Promise<{ error: unknown; build: ServerBuild | null }
   try {
     const build = viteDevServer
 			? await viteDevServer.ssrLoadModule('virtual:remix/server-build')
-			: await import('../build/server/index.js')
+			: // @ts-ignore
+				await import('../build/server/index.js')
 
     return { build: build as unknown as ServerBuild, error: null };
   } catch (error) {
