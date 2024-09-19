@@ -198,20 +198,21 @@ app.use((req, res, next) => {
 	return generalRateLimit(req, res, next)
 })
 
-async function getBuild(): Promise<{
-	error: unknown
-	build: ServerBuild | null
-}> {
+async function getBuild() {
 	try {
 		const build = viteDevServer
 			? await viteDevServer.ssrLoadModule('virtual:remix/server-build')
-			: await import('../build/server/index.js')
+			: await import(
+					/* @ts-expect-error
+				eslint-disable-next-line import/no-unresolved */
+					'../build/server/index.js'
+				)
 
 		return { build: build as unknown as ServerBuild, error: null }
 	} catch (error) {
 		// Catch error and return null to make express happy and avoid an unrecoverable crash
 		console.error('Error creating build:', error)
-		return { error: error, build: null }
+		return { error: error, build: null as unknown as ServerBuild }
 	}
 }
 

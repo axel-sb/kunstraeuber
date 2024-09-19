@@ -37,9 +37,6 @@ jobs:
       - name: 🔬 Lint
         run: npm run lint
 
-      - name: Verify build file
-        run: ls -la build/server/index.js
-
   typecheck:
     name: ʦ TypeScript
     runs-on: ubuntu-22.04
