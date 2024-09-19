@@ -5,7 +5,6 @@ on:
       - main
       - dev
   pull_request: {}
-  workflow_dispatch: {}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -82,10 +81,51 @@ jobs:
       - name: ⚡ Run vitest
         run: npm run test -- --coverage
 
+  playwright:
+    name: 🎭 Playwright
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 🏄 Copy test env vars
+        run: cp .env.example .env
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 📥 Download deps
+        uses: bahmutov/npm-install@v1
+
+      - name: 🛠 Setup Database
+        run: npx prisma migrate deploy
+
+      - name: 🏦 Cache Database
+        id: db-cache
+        uses: actions/cache@v4
+        with:
+          path: prisma/data.db
+          key:
+            db-cache-schema_${{ hashFiles('./prisma/schema.prisma')
+            }}-migrations_${{ hashFiles('./prisma/migrations/*/migration.sql')
+            }}
+
+      - name: 🌱 Seed Database
+        if: steps.db-cache.outputs.cache-hit != 'true'
+        run: npx prisma db seed
+        env:
+          MINIMAL_SEED: true
+
+      - name: 🏗 Build
+        run: npm run build
+
   deploy:
     name: 🚀 Deploy
     runs-on: ubuntu-22.04
-    needs: [lint, typecheck, vitest]
+    needs: [lint, typecheck, vitest, playwright]
     # only build/deploy branches on pushes
     if: ${{ github.event_name == 'push' }}
 
@@ -115,7 +155,7 @@ jobs:
 
       - name: 🚀 Deploy Production
         if: ${{ github.ref == 'refs/heads/main' }}
-        run: |
+        run:
           flyctl deploy --remote-only --build-arg COMMIT_SHA=${{ github.sha }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
