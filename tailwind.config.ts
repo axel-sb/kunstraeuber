@@ -1,5 +1,5 @@
 import { type Config } from 'tailwindcss'
-import plugin from 'tailwindcss/plugin'
+// import plugin from 'tailwindcss/plugin'
 import animatePlugin from 'tailwindcss-animate'
 import radixPlugin from 'tailwindcss-radix'
 import { marketingPreset } from './app/routes/_marketing+/tailwind-preset'
@@ -17,21 +17,30 @@ export default {
 			},
 		},
 		extend: extendedTheme,
-		textShadow: {
+		/* textShadow: {
 			sm: '0 1px 2px var(--tw-shadow-color)',
 			DEFAULT: '0 0 12px var(--tw-shadow-color)',
 			lg: '0 8px 16px var(--tw-shadow-color)',
-		},
+		}, */
 	},
 	presets: [marketingPreset],
 	plugins: [
 		require('tailwindcss-radix')(),
 		animatePlugin,
 		radixPlugin,
-		require('tailwindcss/plugin')(({ addVariant }: { addVariant: (variant: string, style: string | ((params: any) => string)) => void }) => {
-      addVariant('search-cancel', '&::-webkit-search-cancel-button')
-    }),
-		plugin(function ({ matchUtilities, theme }) {
+		require('tailwindcss/plugin')(
+			({
+				addVariant,
+			}: {
+				addVariant: (
+					variant: string,
+					style: string | ((params: any) => string),
+				) => void
+			}) => {
+				addVariant('search-cancel', '&::-webkit-search-cancel-button')
+			},
+		),
+		/* plugin(function ({ matchUtilities, theme }) {
 			matchUtilities(
 				{
 					'text-shadow': (value) => ({
@@ -40,6 +49,6 @@ export default {
 				},
 				{ values: theme('textShadow') },
 			)
-		}),
+		}), */
 	],
 } satisfies Config

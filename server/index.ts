@@ -203,8 +203,8 @@ async function getBuild() {
 		const build = viteDevServer
 			? await viteDevServer.ssrLoadModule('virtual:remix/server-build')
 			: await import(
-					/* @ts-expect-error
-				eslint-disable-next-line import/no-unresolved */
+					// @ts-expect-error
+					// eslint-disable-next-line import/no-unresolved
 					'../build/server/index.js'
 				)
 
