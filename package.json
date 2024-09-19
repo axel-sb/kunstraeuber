@@ -18,7 +18,7 @@
     "format": "prettier --write .",
     "lint": "eslint .",
     "setup": "npm run build && prisma generate && prisma migrate deploy && prisma db seed && playwright install",
-    "start": "cross-env NODE_ENV=production node .",
+    "start": "cross-env NODE_ENV=production node ./build/server/index.js",
     "start:mocks": "cross-env NODE_ENV=production MOCKS=true tsx .",
     "test": "vitest",
     "coverage": "vitest run --coverage",
@@ -112,7 +112,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@epic-web/config": "^1.10.0",
+    "@epic-web/config": "^1.12.0",
     "@faker-js/faker": "^8.4.1",
     "@playwright/test": "^1.44.1",
     "@remix-run/dev": "2.9.2",
