@@ -15,7 +15,7 @@ destination = "/data"
 
 [build]
 dockerfile = "/other/Dockerfile"
-ignorefile = "/other/Dockerfile.dockerignore"
+ignorefile = "/other/.dockerignore"
 
 [[services]]
 internal_port = 8080
