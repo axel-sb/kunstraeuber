@@ -100,6 +100,9 @@ jobs:
       - name: 📥 Download deps
         uses: bahmutov/npm-install@v1
 
+      - name: 📥 Install Playwright Browsers
+        run: npm run test:e2e:install
+
       - name: 🛠 Setup Database
         run: npx prisma migrate deploy
 
@@ -121,6 +124,17 @@ jobs:
 
       - name: 🏗 Build
         run: npm run build
+
+      - name: 🎭 Playwright tests
+        run: npx playwright test
+
+      - name: 📊 Upload report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
 
   deploy:
     name: 🚀 Deploy
@@ -157,5 +171,6 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         run:
           flyctl deploy --remote-only --build-arg COMMIT_SHA=${{ github.sha }}
+          --build-secret SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
